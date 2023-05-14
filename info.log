@@ -1,0 +1,4 @@
+
+{"level":"info","message":{"req":{"email":"sshivam548@gmail.com","password":"123456789012"},"res":{"status":true,"token":"15|eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImV4cCI6MTcxNTYwODMwNCwiaWF0IjoxNjg0MDcyMzA0fQ.lQiojI32nPyj60c-tHvXtK-r0sTKceQ2xPB3XYwh4aw","user":{"email":"sshivam548@gmail.com","id":1,"name":"shivam sahu2","password":"$2b$10$zcQjkwKRUnmOGOsBMxVvH.wA/5vcAJ.q/Nq47PnoJsq8ucEEdwWj2"}}},"timestamp":"2023-05-14T13:51:44.157Z"}
+{"level":"info","message":{"req":{},"res":{"status":true}},"timestamp":"2023-05-14T14:27:30.452Z"}
+{"level":"info","message":{"req":{},"res":{"error":"Not Authenticated 1.1"}},"timestamp":"2023-05-14T14:27:40.429Z"}
