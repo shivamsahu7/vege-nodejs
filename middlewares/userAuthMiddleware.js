@@ -1,7 +1,6 @@
 var jwt = require('jsonwebtoken');
 const moment = require('moment');
-const { User } = require('../models');
-const { personalAccessToken } = require('../models');
+const { User,personalAccessToken } = require('../models');
 
 module.exports = async (req,res,next)=>{
     let token;
@@ -11,7 +10,7 @@ module.exports = async (req,res,next)=>{
 
     }catch(err){
         console.log(err)
-        return res.status(401).json({'error':"Not Authenticated"})
+        return res.status(401).json({'error':req.__('UNAUTHORIZE')})
     }
 
     try{
@@ -23,16 +22,16 @@ module.exports = async (req,res,next)=>{
         })
         // check record in db
         if(!checkPersonalAccessToken){
-            return res.status(400).json({error:"Not Authenticated 1.2"});
+            return res.status(400).json({error:req.__('UNAUTHORIZE')});
         }
         // check token type
         if(checkPersonalAccessToken.tokenableType != "User"){
-            return res.status(400).json({error:"You are not a user"});
+            return res.status(400).json({error:req.__('NOT_USER')});
         }
 
     }catch(err){
         console.log(err)
-        return res.status(401).json({'error':"Not Authenticated2"})
+        return res.status(401).json({'error':req.__('UNAUTHORIZE')})
     }
 
     try{
@@ -50,10 +49,10 @@ module.exports = async (req,res,next)=>{
             req.user = await checkUser
             next()
         }else{
-            return res.status(400).json({error:"Not Authenticated"});
+            return res.status(400).json({error:req.__('UNAUTHORIZE')});
         }
     }catch(err){
         console.log(err)
-        return res.status(401).json({'error':"Not Authenticated3"})
+        return res.status(401).json({'error':req.__('UNAUTHORIZE')})
     }
 }
