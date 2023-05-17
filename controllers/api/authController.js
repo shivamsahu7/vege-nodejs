@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 var jwt = require('jsonwebtoken');
-const moment = require('moment');
+
+const forgotPasswordMail = require('./../../mail/forgotPasswordMail.js')
 
 const { User,personalAccessToken,PasswordResetToen } = require('../../models');
 
@@ -97,7 +98,7 @@ forgotPassword = async (req,res)=>{
             where:{
                 email:email
             },
-            attributes:['email','password']
+            attributes:['email','password','name']
         })
         // check user exist in users table
         if(!checkUser){
@@ -135,7 +136,13 @@ forgotPassword = async (req,res)=>{
 
         const link = `${process.env.WEB_URL}/reset-password/${checkUser.email}/${token}`
 
-        res.status(200).json({
+        forgotPasswordMail(email,{
+            name: checkUser.name,
+            message: 'This is the message content.',
+            link:link
+        })
+
+        return res.status(200).json({
             status:true,
             msg:req.__("EMAIL_SENT"),
             link:link
@@ -175,7 +182,7 @@ resetPassword = async(req,res)=>{
                 password: hash,
             });
 
-            res.status(200).json({
+            return res.status(200).json({
                 status:true,
                 "msg":req.__('PASSWORD_CHANGED')
             });
