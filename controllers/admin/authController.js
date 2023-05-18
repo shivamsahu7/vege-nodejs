@@ -46,11 +46,11 @@ login = async (req,res)=>{
                     token:createPersonalAccessToken.id +'|'+token,
                 })
             }else{
-                res.status(400).send({"err":"Wrong Password"})
+                res.status(400).json({error:req.__('WRONG_PASSWORD')})
             }
 
         }else{
-            res.status(400).json({error:"user does not exist"});
+            res.status(400).json({error:req.__('USER_NOT_EXIST')});
         }
     }catch(error){
         console.log(error)
