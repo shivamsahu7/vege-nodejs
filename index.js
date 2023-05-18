@@ -7,6 +7,7 @@ require('module-alias/register');
 
 const app = express();
 
+
 const corsOptions = {
     origin: '*',
     optionsSuccessStatus: 200,
