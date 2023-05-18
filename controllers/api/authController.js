@@ -1,9 +1,10 @@
 const bcrypt = require('bcrypt');
 var jwt = require('jsonwebtoken');
+const moment = require('moment');
 
-const forgotPasswordMail = require('./../../mail/forgotPasswordMail.js')
+const forgotPasswordMail = require('@mail/forgotPasswordMail.js')
 
-const { User,personalAccessToken,PasswordResetToen } = require('../../models');
+const { User,personalAccessToken,PasswordResetToen } = require('@models');
 
 login = async (req,res)=>{
     try{

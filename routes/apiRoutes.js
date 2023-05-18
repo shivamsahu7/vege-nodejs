@@ -1,14 +1,14 @@
 const router = require('express').Router()
 
-const authMiddleware = require('../middlewares/userAuthMiddleware.js')
+const authMiddleware = require('@middlewares/userAuthMiddleware.js')
 
-const authController = require('../controllers/api/authController.js')
-const userController = require('../controllers/api/userController.js')
+const authController = require('@controllers/api/authController.js')
+const userController = require('@controllers/api/userController.js')
 
-const { loginUserValidationRules, handleloginUserValidationErrors } = require('./../requests/loginValidation.js');
-const { registerUserValidationRules, handleregisterUserValidationErrors } = require('./../requests/registerValidation.js');
-const { forgotPasswordValidationRules,handleForgotPasswordValidationErrors } =require('./../requests/forgotPasswordValidation.js')
-const { resetPasswordValidationRules,handlerestPasswordValidationErrors} =require('./../requests/resetPasswordValidation.js')
+const { loginUserValidationRules, handleloginUserValidationErrors } = require('@requests/loginValidation.js');
+const { registerUserValidationRules, handleregisterUserValidationErrors } = require('@requests/registerValidation.js');
+const { forgotPasswordValidationRules,handleForgotPasswordValidationErrors } =require('@requests/forgotPasswordValidation.js')
+const { resetPasswordValidationRules,handlerestPasswordValidationErrors} =require('@requests/resetPasswordValidation.js')
 
 
 router.post(

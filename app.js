@@ -3,6 +3,7 @@ const cors = require('cors')
 const logger = require('./config/logger.js')
 const i18n = require('./config/i18n.js');
 require('dotenv').config()
+require('module-alias/register');
 
 const app = express();
 
@@ -27,7 +28,7 @@ app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(cors(corsOptions))
 app.use(i18n.init);
-app.use("/api",require('./routes/apiRoutes.js'))
+app.use("/api",require('@routes/apiRoutes.js'))
 
 app.listen(process.env.PORT,()=>{
     console.log(`server listening port http://localhost:${process.env.PORT}`)

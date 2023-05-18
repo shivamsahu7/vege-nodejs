@@ -2,8 +2,8 @@ const bcrypt = require('bcrypt');
 var jwt = require('jsonwebtoken');
 const moment = require('moment');
 
-const { User } = require('../../models');
-const { personalAccessToken } = require('../../models');
+const { User } = require('@models');
+const { personalAccessToken } = require('@models');
 
 login = async (req,res)=>{
     try{

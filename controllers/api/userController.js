@@ -1,4 +1,4 @@
-const { personalAccessToken } = require('../../models');
+const { personalAccessToken } = require('@models');
 
 profile = async (req,res)=>{
     res.status(200).json({user:req.user})

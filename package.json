@@ -7,7 +7,7 @@
     "start": "nodemon app"
   },
   "keywords": [],
-  "author": "",
+  "author": "shivam sahu",
   "license": "ISC",
   "devDependencies": {
     "nodemon": "^2.0.22",
@@ -23,9 +23,29 @@
     "express-validator": "^7.0.1",
     "i18n": "^0.15.1",
     "jsonwebtoken": "^9.0.0",
+    "module-alias": "^2.2.2",
+    "moment": "^2.29.4",
     "mysql2": "^3.3.0",
     "nodemailer": "^6.9.2",
     "sequelize": "^6.31.1",
     "winston": "^3.8.2"
-  }
+  },
+  "_moduleAliases": {
+    "@controllers": "controllers",
+    "@middlewares": "middlewares",
+    "@models": "models",
+    "@requests": "requests",
+    "@routes": "routes",
+    "@mail": "mail",
+    "@config": "config"
+  },
+  "_moduleDirectories": [
+    "controllers",
+    "middlewares",
+    "models",
+    "requests",
+    "routes",
+    "mail",
+    "config"
+  ]
 }
