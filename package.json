@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "nodemon index.js"
   },
   "keywords": [],
   "author": "shivam sahu",
@@ -28,7 +28,10 @@
     "mysql2": "^3.3.0",
     "nodemailer": "^6.9.2",
     "sequelize": "^6.31.1",
-    "winston": "^3.8.2"
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^4.6.3",
+    "winston": "^3.8.2",
+    "yamljs": "^0.3.0"
   },
   "_moduleAliases": {
     "@controllers": "controllers",
