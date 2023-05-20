@@ -10,7 +10,10 @@ module.exports = async (req,res,next)=>{
 
     }catch(err){
         console.log(err)
-        return res.status(401).json({'error':req.__('UNAUTHORIZE')})
+        return res.status(401).json({
+            status:false,
+            error:req.__('UNAUTHORIZE')
+        })
     }
 
     try{
@@ -22,16 +25,25 @@ module.exports = async (req,res,next)=>{
         })
         // check record in db
         if(!checkPersonalAccessToken){
-            return res.status(400).json({error:req.__('UNAUTHORIZE')});
+            return res.status(401).json({
+                status:false,
+                error:req.__('UNAUTHORIZE')
+            })
         }
         // check token type
         if(checkPersonalAccessToken.tokenableType != "User"){
-            return res.status(400).json({error:req.__('NOT_USER')});
+            return res.status(400).json({
+                status:false,
+                error:req.__('NOT_USER')
+            });
         }
 
     }catch(err){
         console.log(err)
-        return res.status(401).json({'error':req.__('UNAUTHORIZE')})
+        return res.status(401).json({
+            status:false,
+            error:req.__('UNAUTHORIZE')
+        })
     }
 
     try{
@@ -49,10 +61,16 @@ module.exports = async (req,res,next)=>{
             req.user = await checkUser
             next()
         }else{
-            return res.status(400).json({error:req.__('UNAUTHORIZE')});
+            return res.status(401).json({
+                status:false,
+                error:req.__('UNAUTHORIZE')
+            })
         }
     }catch(err){
         console.log(err)
-        return res.status(401).json({'error':req.__('UNAUTHORIZE')})
+        return res.status(401).json({
+            status:false,
+            error:req.__('UNAUTHORIZE')
+        })
     }
 }
