@@ -1,12 +1,15 @@
 {
     "UNAUTHORIZE":"You are not authorize.",
-    "NOT_USER":"You are not a user",
-    "USER_EXIST":"User allready exist",
-    "USER_NOT_EXIST":"User does not exist",
-    "WRONG_PASSWORD":"Wrong password",
-    "EMAIL_SENT":"Email has been sent",
-    "TOKEN_NOT_VALID":"Token is not valid",
-    "PASSWORD_CHANGED":"Password has been changed",
-    "SERVER_ISSUE":"Server Error: Internal Server Issue",
-    "LOGOUT_MSG":"You have been logout"
+    "NOT_USER":"You are not a user.",
+    "USER_EXIST":"User allready exist.",
+    "USER_NOT_EXIST":"User does not exist.",
+    "WRONG_PASSWORD":"Wrong password.",
+    "TOKEN_NOT_VALID":"Token is not valid.",
+    "SERVER_ISSUE":"Server Error: Internal Server Issue.",
+    "LOGOUT_MSG":"You have been logout.",
+    "REGISTER_MSG":"You have been register.",
+    "LOGIN_MSG":"You are successfully login.",
+    "EMAIL_SENT":"Email has been sent.",
+    "PASSWORD_CHANGED":"Password has been changed.",
+    "PROFILE_DETAIL":"Your profile detail."
 }

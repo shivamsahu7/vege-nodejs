@@ -43,6 +43,7 @@ login = async (req,res)=>{
 
                 return res.status(200).json({
                     status:true,
+                    msg:req.__('LOGIN_MSG'),
                     user:checkUser,
                     token:createPersonalAccessToken.id +'|'+token,
                 })
@@ -97,6 +98,7 @@ register = async (req,res)=>{
             })
             return res.status(200).json({
                 status:true,
+                msg:req.__('REGISTER_MSG'),
                 user:newUser
             });
         }

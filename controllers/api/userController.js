@@ -4,6 +4,7 @@ profile = async (req,res)=>{
     try{
         return res.status(200).json({
             status:true,
+            msg:req.__('PROFILE_DETAIL'),
             user:req.user,
         })
     }catch(err){
