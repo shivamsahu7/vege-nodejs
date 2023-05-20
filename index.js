@@ -29,8 +29,11 @@ app.use(cors(corsOptions))
 // localization for multiple language
 app.use(i18n.init);
 
-// routes
+// api routes
 app.use("/api",require('@routes/apiRoutes.js'))
+
+// admin routes
+app.use("/admin",require('@routes/adminRoutes.js'))
 
 // api documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))

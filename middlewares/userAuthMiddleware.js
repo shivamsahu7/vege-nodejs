@@ -1,6 +1,6 @@
 var jwt = require('jsonwebtoken');
 const moment = require('moment');
-const { User,personalAccessToken } = require('../models');
+const { User,personalAccessToken } = require('@models');
 
 module.exports = async (req,res,next)=>{
     let token;

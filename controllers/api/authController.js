@@ -1,10 +1,11 @@
 const bcrypt = require('bcrypt');
 var jwt = require('jsonwebtoken');
 const moment = require('moment');
+var passwordGenerator = require('generate-otp')
 
 const forgotPasswordMail = require('@mail/forgotPasswordMail.js')
 
-const { User,personalAccessToken,PasswordResetToen } = require('@models');
+const { User,personalAccessToken,PasswordResetToen,OtpVerify } = require('@models');
 
 login = async (req,res)=>{
     try{
@@ -72,6 +73,78 @@ login = async (req,res)=>{
 register = async (req,res)=>{
     try{
         const {name,email,password} = req.body
+        // check email already exist ?
+        var checkUser = await User.findOne({
+            where:{
+                email:email
+            },
+            attributes:[
+                'id','email','name','emailVerifiedAt'
+            ]
+        }); 
+        // encrypt password
+        const salt = bcrypt.genSaltSync(10);
+        const hash = bcrypt.hashSync(password, salt);
+
+        // user exist 
+        if(checkUser){
+            // user verified
+            if(checkUser.emailVerifiedAt != null){
+                return res.status(400).json({
+                    status:false,
+                    error:req.__('USER_EXIST')
+                });
+            }
+            // user did not verify
+            else{
+                await checkUser.update({
+                    name:name,
+                    email:email,
+                    password:hash
+                })
+                await OtpVerify.destroy({
+                    where:{
+                        otpType:'User',
+                        otpId:checkUser.id
+                    }
+                })
+            }
+        }
+        else{
+            // new user create
+            checkUser = await User.create({
+                name:name,
+                email:email,
+                password:hash
+            })
+        }
+
+        // random otp generate
+        let randomOtp  = passwordGenerator.generate(5);
+
+        let newOtpVerify = await OtpVerify.create({
+            otpType:'User',
+            otpId:checkUser.id,
+            otp:randomOtp
+        })
+
+        return res.status(200).json({
+            status:true,
+            msg:req.__('REGISTER_MSG'),
+            user:checkUser
+        });
+    }catch(error){
+        console.log(error)
+        return res.status(400).json({
+            status:false,
+            error:req.__('SERVER_ISSUE')
+        });
+    }
+}
+
+otpVerify = async (req,res)=>{
+    try{
+        const {otp,email} = req.body
         // check email already exist ?
         const checkUser = await User.findOne({
             where:{
@@ -231,5 +304,5 @@ resetPassword = async(req,res)=>{
 }
 
 module.exports = {
-    login,register,forgotPassword,resetPassword
+    login,register,otpVerify,forgotPassword,resetPassword
 }

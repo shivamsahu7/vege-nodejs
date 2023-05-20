@@ -7,6 +7,7 @@ const userController = require('@controllers/api/userController.js')
 
 const { loginUserValidationRules, handleloginUserValidationErrors } = require('@requests/api/loginValidation.js');
 const { registerUserValidationRules, handleregisterUserValidationErrors } = require('@requests/api/registerValidation.js');
+const { otpValidationRules, handleOtpValidationErrors } = require('@requests/api/otpValidation.js');
 const { forgotPasswordValidationRules,handleForgotPasswordValidationErrors } =require('@requests/api/forgotPasswordValidation.js')
 const { resetPasswordValidationRules,handlerestPasswordValidationErrors} =require('@requests/api/resetPasswordValidation.js')
 
@@ -23,6 +24,13 @@ router.post(
     registerUserValidationRules,
     handleregisterUserValidationErrors,
     authController.register
+)
+
+router.post(
+    '/otp-verify',
+    otpValidationRules,
+    handleOtpValidationErrors,
+    authController.otpVerify
 )
 
 router.post(
