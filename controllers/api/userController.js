@@ -1,7 +1,18 @@
 const { personalAccessToken } = require('@models');
 
 profile = async (req,res)=>{
-    res.status(200).json({user:req.user})
+    try{
+        return res.status(200).json({
+            status:true,
+            user:req.user,
+        })
+    }catch(err){
+        console.log(err)
+        return res.status(400).json({
+            status:false,
+            error:req.__('SERVER_ISSUE')
+        });
+    }
 }
 
 logout = async (req,res)=>{
@@ -15,13 +26,22 @@ logout = async (req,res)=>{
             }
         })
         if(deletePersonalAccessToken){
-            res.status(200).json({status:true})
+            return res.status(200).json({
+                status:true,
+                msg:req.__('LOGOUT_MSG')
+            })
         }else{
-            res.status(400).json({error:"we are facing server issue2"});
+            return res.status(400).json({
+                status:false,
+                error:req.__('TOKEN_NOT_VALID')
+            });
         }
     }catch(err){
         console.log(err)
-        res.status(400).json({error:"we are facing server issue"});
+        return res.status(400).json({
+            status:false,
+            error:req.__('SERVER_ISSUE')
+        });
     }
 }
 

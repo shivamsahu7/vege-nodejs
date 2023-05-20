@@ -7,5 +7,6 @@
     "EMAIL_SENT":"Email has been sent",
     "TOKEN_NOT_VALID":"Token is not valid",
     "PASSWORD_CHANGED":"Password has been changed",
-    "SERVER_ISSUE":"Server Error: Internal Server Issue"
+    "SERVER_ISSUE":"Server Error: Internal Server Issue",
+    "LOGOUT_MSG":"You have been logout"
 }

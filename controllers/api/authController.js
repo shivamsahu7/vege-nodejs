@@ -8,7 +8,7 @@ const { User,personalAccessToken,PasswordResetToen } = require('@models');
 
 login = async (req,res)=>{
     try{
-        const {name,email,password} = req.body
+        const {email,password} = req.body
 
         // check email already exist ?
         const checkUser = await User.findOne({
@@ -41,20 +41,30 @@ login = async (req,res)=>{
                     expiresAt:moment(new Date(tokenExp*1000)).format('YYYY-MM-DD HH:mm:ss')
                 })
 
-                res.status(200).json({
+                return res.status(200).json({
                     status:true,
                     user:checkUser,
                     token:createPersonalAccessToken.id +'|'+token,
                 })
             }else{
-                res.status(400).json({error:req.__('WRONG_PASSWORD')})
+                return res.status(400).json({
+                    status:false,
+                    error:req.__('WRONG_PASSWORD')
+                })
             }
 
         }else{
-            res.status(400).json({error:req.__('USER_NOT_EXIST')});
+            return res.status(400).json({
+                status:false,
+                error:req.__('USER_NOT_EXIST')
+            });
         }
     }catch(error){
         console.log(error)
+        return res.status(400).json({
+            status:false,
+            error:req.__('SERVER_ISSUE')
+        });
     }
 }
 
@@ -71,7 +81,10 @@ register = async (req,res)=>{
             ]
         }); 
         if(checkUser){
-            res.status(400).json({error:req.__('USER_EXIST')});
+            return res.status(400).json({
+                status:false,
+                error:req.__('USER_EXIST')
+            });
         }else{
             // encrypt password
             const salt = bcrypt.genSaltSync(10);
@@ -82,13 +95,17 @@ register = async (req,res)=>{
                 email:email,
                 password:hash
             })
-            res.status(200).json({
+            return res.status(200).json({
                 status:true,
                 user:newUser
             });
         }
     }catch(error){
         console.log(error)
+        return res.status(400).json({
+            status:false,
+            error:req.__('SERVER_ISSUE')
+        });
     }
 }
 
@@ -103,7 +120,10 @@ forgotPassword = async (req,res)=>{
         })
         // check user exist in users table
         if(!checkUser){
-            res.status(400).json({error:req.__('USER_NOT_EXIST')});
+            return res.status(400).json({
+                status:false,
+                error:req.__('USER_NOT_EXIST')
+            });
         }
 
         // generate jwt token for forgot password
@@ -150,6 +170,10 @@ forgotPassword = async (req,res)=>{
         })
     }catch(err){
         console.log(err)
+        return res.status(400).json({
+            status:false,
+            error:req.__('SERVER_ISSUE')
+        });
     }
 }
 
@@ -162,7 +186,10 @@ resetPassword = async(req,res)=>{
             }
         })
         if(token != existPasswordResetToken.token){
-            return res.status(400).json({error:req.__('TOKEN_NOT_VALID')});
+            return res.status(400).json({
+                status:false,
+                error:req.__('TOKEN_NOT_VALID')
+            });
         }
         // after verified token delete
         await existPasswordResetToken.destroy()
@@ -188,11 +215,16 @@ resetPassword = async(req,res)=>{
                 "msg":req.__('PASSWORD_CHANGED')
             });
         }else{
-            return res.status(400).json({error:req.__('USER_NOT_EXIST')});
+            return res.status(400).json({
+                status:false,
+                error:req.__('USER_NOT_EXIST')
+            });
         }
     }catch(err){
         console.log(err)
-        res.status(400).json({status:false,msg:req.__('SERVER_ISSUE')});
+        return res.status(400).json({
+            status:false,msg:req.__('SERVER_ISSUE')
+        });
     }
 }
 
