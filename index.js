@@ -12,7 +12,6 @@ const app = express();
 
 // insert log
 // app.use((req,res,next)=>{
-//     // console.log(req.body)
 //     let oldSend = res.send
 //     res.send = function(data){
 //         oldSend.apply(res,arguments)
