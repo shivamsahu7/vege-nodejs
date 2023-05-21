@@ -12,9 +12,9 @@ login = async (req,res)=>{
         const {email,password} = req.body
 
         // check email already exist ?
-        const checkUser = await User.findOne({
+        const checkUser = await User.scope('userVerified').findOne({
             where:{
-                email:email
+                email:email,
             },
             attributes:[
                 'id','email','name','password'

@@ -61,6 +61,47 @@
         }
       }
     },
+    "/api/otp-verify": {
+      "post": {
+        "summary": "Verify otp for register user",
+        "operationId": "otpVerify",
+        "tags": ["Auth"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "User's email address"
+                  },
+                  "otp": {
+                    "type": "integer",
+                    "pattern": "^[0-9]{5}$",
+                    "description": "Enter 5 digit otp"
+                  }
+                },
+                "required": ["name", "email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User registered successfully"
+          },
+          "400": {
+            "description": "Bad request. Invalid input data"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
     "/api/login": {
       "post": {
         "summary": "Login user",

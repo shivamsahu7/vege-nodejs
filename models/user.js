@@ -2,6 +2,7 @@
 const {
   Model
 } = require('sequelize');
+const { Op } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -12,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
     }
+    
   }
   User.init({
     name: DataTypes.STRING,
@@ -19,7 +21,17 @@ module.exports = (sequelize, DataTypes) => {
     password: DataTypes.STRING,
     emailVerifiedAt: DataTypes.STRING,
     rememberToken:DataTypes.STRING
-  }, {
+  }, 
+  {    
+    scopes: {
+      userVerified:{
+        where: {
+          emailVerifiedAt: {
+            [Op.not]: null,
+          }
+        }
+      }
+    },
     sequelize,
     modelName: 'User',
   });
