@@ -3,6 +3,8 @@
     "NOT_USER":"आप एक उपयोगकर्ता नहीं हैं |",
     "USER_EXIST":"उपयोगकर्ता पहले से ही मौजूद हैं |",
     "USER_NOT_EXIST":"उपभोगकर्ता मौजूद नहीं हैं |",
+    "OTP_INVALID":"OTP मौजूद नहीं हैं |",
+    "OTP_EXPIRED":"OTP has been expired |",
     "WRONG_PASSWORD":"गलत पासवर्ड हैं |",
     "TOKEN_NOT_VALID":"टोकन मान्य नहीं है |",
     "SERVER_ISSUE":"सर्वर त्रुटि: आंतरिक सर्वर समस्या |",

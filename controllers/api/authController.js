@@ -74,7 +74,7 @@ register = async (req,res)=>{
     try{
         const {name,email,password} = req.body
         // check email already exist ?
-        var checkUser = await User.findOne({
+        let checkUser = await User.findOne({
             where:{
                 email:email
             },
@@ -148,33 +148,62 @@ otpVerify = async (req,res)=>{
         // check email already exist ?
         const checkUser = await User.findOne({
             where:{
-                email:email
+                email:email,
+                emailVerifiedAt:null
             },
             attributes:[
-                'email','name'
+                'id','email','emailVerifiedAt'
             ]
         }); 
+        // return res.send({checkUser})
         if(checkUser){
-            return res.status(400).json({
-                status:false,
-                error:req.__('USER_EXIST')
-            });
-        }else{
-            // encrypt password
-            const salt = bcrypt.genSaltSync(10);
-            const hash = bcrypt.hashSync(password, salt);
-
-            let newUser = await User.create({
-                name:name,
-                email:email,
-                password:hash
+            let checkOtpVerify = await OtpVerify.findOne({
+                where:{
+                    otpId:checkUser.id,
+                    otpType:'User'
+                },
+                attributes:[
+                    'id','otp','createdAt'
+                ]
             })
-            return res.status(200).json({
-                status:true,
-                msg:req.__('REGISTER_MSG'),
-                user:newUser
-            });
+            
+            if(checkOtpVerify && (checkOtpVerify.otp == otp)){
+                // check token is not expired
+                const currentTime = new Date();
+                // Add 5 minutes in otp createdAt time
+                const otpExpiredTimeAdd5Minute = new Date(checkOtpVerify.createdAt.getTime() + 5 * 60000);
+                // compare current time with expired time
+                if(currentTime >= otpExpiredTimeAdd5Minute){
+                    await checkOtpVerify.destroy()
+                    return res.status(400).json({
+                        status:false,
+                        error:req.__('OTP_EXPIRED')
+                    });
+                }
+
+                // user insert verified at
+                await checkUser.update({
+                    emailVerifiedAt:new Date().toISOString().replace("T", " ").replace("Z", "")
+                })
+
+                await checkOtpVerify.destroy()
+
+                return res.status(200).json({
+                    status:true,
+                    msg:req.__('REGISTER_MSG'),
+                    user:checkUser
+                });
+            }else{
+                return res.status(400).json({
+                    status:false,
+                    error:req.__('OTP_INVALID')
+                });
+            }
         }
+        return res.status(400).json({
+            status:false,
+            error:req.__('USER_NOT_EXIST')
+        });
     }catch(error){
         console.log(error)
         return res.status(400).json({

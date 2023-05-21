@@ -29,10 +29,8 @@
     "mysql2": "^3.3.0",
     "nodemailer": "^6.9.2",
     "sequelize": "^6.31.1",
-    "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^4.6.3",
-    "winston": "^3.8.2",
-    "yamljs": "^0.3.0"
+    "winston": "^3.8.2"
   },
   "_moduleAliases": {
     "@controllers": "controllers",

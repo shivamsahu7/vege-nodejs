@@ -3,6 +3,8 @@
     "NOT_USER":"You are not a user.",
     "USER_EXIST":"User allready exist.",
     "USER_NOT_EXIST":"User does not exist.",
+    "OTP_INVALID":"Otp is invalid.",
+    "OTP_EXPIRED":"OTP has been expired.",
     "WRONG_PASSWORD":"Wrong password.",
     "TOKEN_NOT_VALID":"Token is not valid.",
     "SERVER_ISSUE":"Server Error: Internal Server Issue.",
