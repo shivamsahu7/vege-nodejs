@@ -131,6 +131,7 @@ register = async (req,res)=>{
         return res.status(200).json({
             status:true,
             msg:req.__('REGISTER_MSG'),
+            otp:randomOtp,
             user:checkUser
         });
     }catch(error){
