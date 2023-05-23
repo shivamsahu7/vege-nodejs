@@ -51,7 +51,7 @@ module.exports = async (req,res,next)=>{
         // check email already exist ?
         const checkAdmin = await Admin.findOne({
             where:{
-                id:data.userId
+                id:data.adminId
             },
             attributes:[
                 'id','email','name'
