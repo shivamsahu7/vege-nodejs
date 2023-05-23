@@ -1,23 +1,23 @@
 const nodemailer = require('nodemailer');
 const ejs = require('ejs');
 const path = require('path');
-const mail = require('./../config/mail.js')
+const mail = require('../config/mail.js')
 
-async function forgotPasswordMail(recipient, templateData) {
+async function registerOtpMail(recipient, templateData) {
     // mail send
     const transporter = mail.createTransporter();
 
-    const templatePath = path.resolve(process.cwd(),'resources','email', 'forgot-password.ejs');
+    const templatePath = path.resolve(process.cwd(),'resources','email', 'register-otp.ejs');
 
     const template = await ejs.renderFile(templatePath, templateData);
 
     const mailOptions = {
         from: process.env.EMAIL_FROM,
         to: recipient,
-        subject: "Forgot Password",
+        subject: "Register Otp",
         html: template
     };
-    
+
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
             console.log(error);
@@ -30,4 +30,4 @@ async function forgotPasswordMail(recipient, templateData) {
     // End mail send
 }
   
-module.exports = forgotPasswordMail;
+module.exports = registerOtpMail;

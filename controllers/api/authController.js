@@ -1,9 +1,11 @@
 const bcrypt = require('bcrypt');
 var jwt = require('jsonwebtoken');
+
 const moment = require('moment');
 var passwordGenerator = require('generate-otp')
 
 const forgotPasswordMail = require('@mail/forgotPasswordMail.js')
+const registerOtpMail = require('@mail/registerOtpMail.js')
 
 const { User,personalAccessToken,PasswordResetToen,OtpVerify } = require('@models');
 
@@ -14,7 +16,7 @@ login = async (req,res)=>{
         // check email already exist ?
         const checkUser = await User.scope('userVerified').findOne({
             where:{
-                email:email,
+                email:email
             },
             attributes:[
                 'id','email','name','password'
@@ -125,6 +127,12 @@ register = async (req,res)=>{
         let newOtpVerify = await OtpVerify.create({
             otpType:'User',
             otpId:checkUser.id,
+            otp:randomOtp
+        })
+
+        registerOtpMail(email,{
+            name: checkUser.name,
+            message: 'This is the message content.',
             otp:randomOtp
         })
 
