@@ -14,5 +14,6 @@
     "LOGIN_MSG":"You are successfully login.",
     "EMAIL_SENT":"Email has been sent.",
     "PASSWORD_CHANGED":"Password has been changed.",
-    "PROFILE_DETAIL":"Your profile detail."
+    "PROFILE_DETAIL":"Your profile detail.",
+    "CATEGORY_ADD":"Category add successfully"
 }

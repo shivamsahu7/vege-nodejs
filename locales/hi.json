@@ -14,5 +14,6 @@
     "LOGIN_MSG":"आप सफलतापूर्वक लॉगिन कर रहे हैं |",
     "EMAIL_SENT":"ईमेल भेज दिया गया है |",
     "PASSWORD_CHANGED":"पासवर्ड बदला जा चुका है |",
-    "PROFILE_DETAIL":"आपका प्रोफ़ाइल विवरण"
+    "PROFILE_DETAIL":"आपका प्रोफ़ाइल विवरण",
+    "CATEGORY_ADD":"Category add successfully"
 }
