@@ -29,6 +29,8 @@ app.use(cors(corsOptions))
 // localization for multiple language
 app.use(i18n.init);
 
+app.use(express.static('public'));
+
 // api routes
 app.use("/api",require('@routes/apiRoutes.js'))
 
