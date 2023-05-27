@@ -232,6 +232,7 @@ forgotPassword = async (req,res)=>{
             attributes:['email','password','name']
         })
         // check user exist in users table
+
         if(!checkUser){
             return res.status(400).json({
                 status:false,
@@ -240,6 +241,7 @@ forgotPassword = async (req,res)=>{
         }
 
         // generate jwt token for forgot password
+
         let token = jwt.sign(
             {
                 userId: checkUser.id,
@@ -256,6 +258,7 @@ forgotPassword = async (req,res)=>{
                 email:email
             }
         })
+        
         // if record exist delete previous record
         if(existPasswordResetToen ){
             await existPasswordResetToen.destroy({
