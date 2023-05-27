@@ -15,5 +15,6 @@
     "EMAIL_SENT":"Email has been sent.",
     "PASSWORD_CHANGED":"Password has been changed.",
     "PROFILE_DETAIL":"Your profile detail.",
-    "CATEGORY_ADD":"Category add successfully"
+    "CATEGORY_ADD":"Category add successfully",
+    "CATEGORY_DELETE":"Category is deleted"
 }

@@ -8,6 +8,7 @@ const categoryController = require('@controllers/admin/categoryController.js')
 const { loginAdminValidationRules, handleloginAdminValidationErrors } = require('@requests/admin/loginValidation.js');
 const { addCategoryValidationRules, handleaddCategoryValidationErrors } = require('@requests/admin/categoryValidation.js');
 
+
 router.post(
     '/login',
     loginAdminValidationRules,
@@ -27,5 +28,7 @@ router.post(
     handleaddCategoryValidationErrors,
     categoryController.addCategory
 )
+
+router.post('/delete-category/:id' , categoryController.deleteCategory)
 
 module.exports = router

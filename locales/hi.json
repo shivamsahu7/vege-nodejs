@@ -15,5 +15,6 @@
     "EMAIL_SENT":"ईमेल भेज दिया गया है |",
     "PASSWORD_CHANGED":"पासवर्ड बदला जा चुका है |",
     "PROFILE_DETAIL":"आपका प्रोफ़ाइल विवरण",
-    "CATEGORY_ADD":"Category add successfully"
+    "CATEGORY_ADD":"Category add successfully",
+    "CATEGORY_DELETE":"Category is deleted"
 }
