@@ -1,4 +1,5 @@
 const path = require('path');
+const  { StatusCodes } = require('http-status-codes');
 const { Category } = require('@models');
 
 addCategory = async(req,res)=>{
@@ -15,7 +16,7 @@ addCategory = async(req,res)=>{
         slug:slug,
         image:fileName
     })
-    return res.status(200).json({
+    return res.status(StatusCodes.CREATED).json({
         status:true,
         msg:req.__('CATEGORY_ADD'),
         category:newCategory

@@ -6,7 +6,8 @@ const authController = require('@controllers/admin/authController.js')
 const categoryController = require('@controllers/admin/categoryController.js')
 
 const { loginAdminValidationRules, handleloginAdminValidationErrors } = require('@requests/admin/loginValidation.js');
-const { addCategoryValidationRules, handleaddCategoryValidationErrors } = require('@requests/admin/categoryValidation.js');
+const { addCategoryValidationRules, handleaddCategoryValidationErrors } = require('@requests/admin/addcategoryValidation.js');
+const { updateCategoryValidationRules, handleupdateCategoryValidationErrors } = require('@requests/admin/updatecategoryValidation.js');
 
 router.post(
     '/login',
@@ -27,5 +28,15 @@ router.post(
     handleaddCategoryValidationErrors,
     categoryController.addCategory
 )
+
+// router.post(
+//     '/update-category',
+//     fileupload({
+//         useTempFiles:true,
+//         tempFileDir:'public'
+//     }),
+//     updateCategoryValidationRules,
+//     handleupdateCategoryValidationErrors
+// )
 
 module.exports = router

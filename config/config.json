@@ -15,9 +15,9 @@
   },
   "production": {
     "dialect": "mysql",
-    "host": "sql7.freesqldatabase.com",
-    "database": "sql7619275",
-    "username": "sql7619275",
-    "password": "nsZVpB8vny"
+    "host": "127.0.0.1",
+    "database": "vege_node",
+    "username": "root",
+    "password": null
   }
 }

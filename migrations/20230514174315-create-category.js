@@ -10,13 +10,23 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       name: {
+        allowNull: false,
         type: Sequelize.STRING
       },
       slug: {
+        unique: true,
+        allowNull: false,
         type: Sequelize.STRING
       },
       image: {
+        allowNull: false,
         type: Sequelize.STRING
+      },
+      status:{
+        allowNull: false,
+        defaultValue: true,
+        comment: '0 => disable,1 => enable',
+        type: Sequelize.BOOLEAN
       },
       deletedAt: {
         type: Sequelize.DATE
