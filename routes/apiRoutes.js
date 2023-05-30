@@ -5,45 +5,44 @@ const authMiddleware = require('@middlewares/userAuthMiddleware.js')
 const authController = require('@controllers/api/authController.js')
 const userController = require('@controllers/api/userController.js')
 
-const { loginUserValidationRules, handleloginUserValidationErrors } = require('@requests/api/loginValidation.js');
-const { registerUserValidationRules, handleregisterUserValidationErrors } = require('@requests/api/registerValidation.js');
-const { otpValidationRules, handleOtpValidationErrors } = require('@requests/api/otpValidation.js');
-const { forgotPasswordValidationRules,handleForgotPasswordValidationErrors } =require('@requests/api/forgotPasswordValidation.js')
-const { resetPasswordValidationRules,handlerestPasswordValidationErrors} =require('@requests/api/resetPasswordValidation.js')
+const handleValidationErrors = require('@requests/handleValidationErrors.js')
+
+const { loginUserValidationRules,registerUserValidationRules,otpValidationRules,forgotPasswordValidationRules,resetPasswordValidationRules } = require('@requests/api/authValidation.js');
+
 
 
 router.post(
     '/login',
     loginUserValidationRules,
-    handleloginUserValidationErrors,
+    handleValidationErrors,
     authController.login
 )
 
 router.post(
     '/register',
     registerUserValidationRules,
-    handleregisterUserValidationErrors,
+    handleValidationErrors,
     authController.register
 )
 
 router.post(
     '/otp-verify',
     otpValidationRules,
-    handleOtpValidationErrors,
+    handleValidationErrors,
     authController.otpVerify
 )
 
 router.post(
     '/forgot-password',
     forgotPasswordValidationRules,
-    handleForgotPasswordValidationErrors,
+    handleValidationErrors,
     authController.forgotPassword
 )
 
 router.post(
     '/reset-password',
     resetPasswordValidationRules,
-    handlerestPasswordValidationErrors,
+    handleValidationErrors,
     authController.resetPassword
 )
 

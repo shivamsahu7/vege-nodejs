@@ -4,16 +4,18 @@ const fileupload = require('express-fileupload')
 const adminMiddleware = require('@middlewares/adminAuthMiddleware.js') 
 const authController = require('@controllers/admin/authController.js')
 const categoryController = require('@controllers/admin/categoryController.js')
+const subCategoryController = require('@controllers/admin/subCategoryController.js')
+
+const handleValidationErrors = require('@requests/handleValidationErrors.js')
 
 const { loginAdminValidationRules, handleloginAdminValidationErrors } = require('@requests/admin/loginValidation.js');
-const { addCategoryValidationRules, handleaddCategoryValidationErrors } = require('@requests/admin/addcategoryValidation.js');
-const { updateCategoryValidationRules, handleupdateCategoryValidationErrors } = require('@requests/admin/updatecategoryValidation.js');
+const { addCategoryValidationRules, addSubCategoryValidationRules, updateCategoryValidationRules } = require('@requests/admin/categoryValidation.js');
 
 
 router.post(
     '/login',
     loginAdminValidationRules,
-    handleloginAdminValidationErrors,
+    handleValidationErrors,
     authController.login
 )
 
@@ -26,7 +28,7 @@ router.post(
         tempFileDir:'public'
     }),
     addCategoryValidationRules,
-    handleaddCategoryValidationErrors,
+    handleValidationErrors,
     categoryController.addCategory
 )
 
@@ -42,5 +44,17 @@ router.post(
 
 router.post('/delete-category/:id' , categoryController.deleteCategory)
 
+router.post(
+    '/add-subcategory',
+    fileupload({
+        useTempFiles:true,
+        tempFileDir:'public'
+    }),
+    addSubCategoryValidationRules,
+    handleValidationErrors,
+    subCategoryController.addSubCategory
+)
+
+router.post('/delete-subcategory/:id' , subCategoryController.deleteSubCategory)
 
 module.exports = router

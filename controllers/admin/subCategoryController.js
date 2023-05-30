@@ -1,46 +1,48 @@
 const path = require('path');
 const  { StatusCodes } = require('http-status-codes');
-const { Category } = require('@models');
+const {SubCategory} = require('@models');
 const fs = require("fs")
 
-addCategory = async (req, res) => {
-    const { name, slug } = req.body
+addSubCategory = async (req, res) => {  
+    const { name, slug, categoryId } = req.body
     // file name with date
     let fileName = Date.now() + '-' + req.files.image.name
-    console.log(req)
 
     // upload path with file name
-    const categoryUploadPathWithFileName = path.resolve(process.cwd(), 'public', 'files', 'category', fileName);
+    const subCategoryUploadPathWithFileName = path.resolve(process.cwd(), 'public', 'files', 'sub-category', fileName);
     // file upload 
-    req.files.image.mv(categoryUploadPathWithFileName)
+    req.files.image.mv(subCategoryUploadPathWithFileName)
 
-    let newCategory = await Category.create({
+    let newSubCategory = await SubCategory.create({
         name: name,
         slug: slug,
-        image: fileName
+        image: fileName,
+        categoryId: categoryId
     })
 
     return res.status(StatusCodes.CREATED).json({
         status:true,
         msg:req.__('CATEGORY_ADD'),
-        category:newCategory
+        subCategory:newSubCategory
     });
 }
 
-deleteCategory = async (req, res) => {
+deleteSubCategory = async (req, res) => {
     try {
-        
+
         const { id } = req.params
 
-        let findUser = await Category.findOne({
+        let findUser = await SubCategory.findOne({
             where: {
                 id: id,
             },
         })
 
-        let filePath = path.resolve(`public/files/category/${findUser.image}`)
-
+        // let filePath = path.resolve(`public/files/sub-category/${findUser.image}`)
+        let filePath =path.resolve(process.cwd(), 'public', 'files', 'sub-category', findUser.image);
+    
         if (fs.existsSync(filePath)) {
+            
             fs.unlink(filePath, (error) => {
                 if (error) {
                     console.error('Error deleting file:', err);
@@ -52,7 +54,7 @@ deleteCategory = async (req, res) => {
             console.log('File does not exist');
         }
 
-        let deleteCategory = await Category.destroy({
+        let deleteSubCategory = await SubCategory.destroy({
             where: {
                 id: id,
             }
@@ -69,9 +71,7 @@ deleteCategory = async (req, res) => {
     }
 }
 
-
-
 module.exports = {
-    addCategory,
-    deleteCategory
+    addSubCategory,
+    deleteSubCategory,
 }
