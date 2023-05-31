@@ -31,18 +31,22 @@ router.post(
     handleValidationErrors,
     categoryController.addCategory
 )
+ 
 
-// router.post(
-//     '/update-category',
-//     fileupload({
-//         useTempFiles:true,
-//         tempFileDir:'public'
-//     }),
-//     updateCategoryValidationRules,
-//     handleupdateCategoryValidationErrors
-// )
 
 router.post('/delete-category/:id' , categoryController.deleteCategory)
+
+router.post(
+    '/update-category/:id',
+    fileupload({
+        useTempFiles:true,
+        tempFileDir:'public'
+    }),
+    updateCategoryValidationRules,
+     handleValidationErrors,
+    categoryController.updateCategory
+)
+
 
 router.post(
     '/add-subcategory',
@@ -56,5 +60,7 @@ router.post(
 )
 
 router.post('/delete-subcategory/:id' , subCategoryController.deleteSubCategory)
+
+
 
 module.exports = router

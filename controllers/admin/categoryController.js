@@ -1,13 +1,14 @@
 const path = require('path');
-const  { StatusCodes } = require('http-status-codes');
+const { StatusCodes } = require('http-status-codes');
 const { Category } = require('@models');
-const fs = require("fs")
+const fs = require("fs");
+const { where } = require('sequelize');
 
 addCategory = async (req, res) => {
+
     const { name, slug } = req.body
     // file name with date
     let fileName = Date.now() + '-' + req.files.image.name
-    console.log(req)
 
     // upload path with file name
     const categoryUploadPathWithFileName = path.resolve(process.cwd(), 'public', 'files', 'category', fileName);
@@ -21,15 +22,15 @@ addCategory = async (req, res) => {
     })
 
     return res.status(StatusCodes.CREATED).json({
-        status:true,
-        msg:req.__('CATEGORY_ADD'),
-        category:newCategory
+        status: true,
+        msg: req.__('CATEGORY_ADD'),
+        category: newCategory
     });
 }
 
 deleteCategory = async (req, res) => {
     try {
-        
+
         const { id } = req.params
 
         let findUser = await Category.findOne({
@@ -69,9 +70,59 @@ deleteCategory = async (req, res) => {
     }
 }
 
+updateCategory = async (req, res) => {
+    // return res.send({R : 'case1'}) 
+    let checkCategory = await Category.findOne({
+        where:{
+            id: req.params.id
+        }
+    })
+    // return res.send({r:req.body})
+
+    if(req.body.hasOwnProperty('name')){
+        checkCategory.name = req.body.name
+    }
+    if(req.body.hasOwnProperty('slug')){
+
+        checkCategory.slug = req.body.slug
+    }
+    if(req.files && req.files.image){
+        //exist file delete
+        let filePath = path.resolve(process.cwd() , 'public' , 'files' , 'category', checkCategory.image)
+        if(  fs.existsSync(filePath)){
+            fs.unlink(filePath , (error)=>{
+                if(error){
+                    console.log(error)
+                }
+            })
+        }
+
+        //upload new image
+        let fileName = Date.now() + '-' + req.files.image.name
+
+        // upload path with file name
+        const categoryUploadPathWithFileName = path.resolve(process.cwd(), 'public', 'files', 'category', fileName);
+        // file upload 
+        req.files.image.mv(categoryUploadPathWithFileName)
+
+        checkCategory.image = fileName
+
+    }
+
+    checkCategory.save();
+
+    return res.status(StatusCodes.CREATED).json({
+        status: true,
+        msg: req.__('CATEGORY_UPDATE'),
+        category: checkCategory
+    });
+
+}
+
 
 
 module.exports = {
     addCategory,
-    deleteCategory
+    deleteCategory,
+    updateCategory
 }

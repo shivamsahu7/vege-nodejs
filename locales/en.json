@@ -16,5 +16,6 @@
     "PASSWORD_CHANGED":"Password has been changed.",
     "PROFILE_DETAIL":"Your profile detail.",
     "CATEGORY_ADD":"Category add successfully",
-    "CATEGORY_DELETE":"Category is deleted"
+    "CATEGORY_DELETE":"Category is deleted",
+    "CATEGORY_UPDATE":"Categoryis updated"
 }
