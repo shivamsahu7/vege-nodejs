@@ -4,6 +4,26 @@ const { Category } = require('@models');
 const fs = require("fs");
 const { where } = require('sequelize');
 
+categoryList = async (req, res) => {
+    const pageNumber = parseInt(req.query.offset);        // The page number you want to retrieve
+    const pageSize = parseInt(req.query.limit);         // The number of records per page
+    const offset = (pageNumber - 1) * pageSize;
+
+    let totalNumberOfPages = await Category.count()
+
+    let categoryData = await Category.findAll({
+        offset: offset,
+        limit: pageSize,
+    })
+
+    return res.status(StatusCodes.ACCEPTED).send({
+        status: true,
+        totalPages:Math.ceil(totalNumberOfPages/pageSize),
+        msg: "retrived data from category",
+        categories: categoryData
+    })
+}
+
 addCategory = async (req, res) => {
 
     const { name, slug } = req.body
@@ -73,25 +93,25 @@ deleteCategory = async (req, res) => {
 updateCategory = async (req, res) => {
     // return res.send({R : 'case1'}) 
     let checkCategory = await Category.findOne({
-        where:{
+        where: {
             id: req.params.id
         }
     })
     // return res.send({r:req.body})
 
-    if(req.body.hasOwnProperty('name')){
+    if (req.body.hasOwnProperty('name')) {
         checkCategory.name = req.body.name
     }
-    if(req.body.hasOwnProperty('slug')){
+    if (req.body.hasOwnProperty('slug')) {
 
         checkCategory.slug = req.body.slug
     }
-    if(req.files && req.files.image){
+    if (req.files && req.files.image) {
         //exist file delete
-        let filePath = path.resolve(process.cwd() , 'public' , 'files' , 'category', checkCategory.image)
-        if(  fs.existsSync(filePath)){
-            fs.unlink(filePath , (error)=>{
-                if(error){
+        let filePath = path.resolve(process.cwd(), 'public', 'files', 'category', checkCategory.image)
+        if (fs.existsSync(filePath)) {
+            fs.unlink(filePath, (error) => {
+                if (error) {
                     console.log(error)
                 }
             })
@@ -122,6 +142,7 @@ updateCategory = async (req, res) => {
 
 
 module.exports = {
+    categoryList,
     addCategory,
     deleteCategory,
     updateCategory

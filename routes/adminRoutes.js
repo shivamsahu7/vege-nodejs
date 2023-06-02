@@ -21,6 +21,10 @@ router.post(
 
 router.use("/" , adminMiddleware);
 
+router.get('/list-category',
+categoryController.categoryList
+)
+
 router.post(
     '/add-category',
     fileupload({
@@ -32,10 +36,6 @@ router.post(
     categoryController.addCategory
 )
  
-
-
-router.post('/delete-category/:id' , categoryController.deleteCategory)
-
 router.post(
     '/update-category/:id',
     fileupload({
@@ -46,6 +46,8 @@ router.post(
      handleValidationErrors,
     categoryController.updateCategory
 )
+
+router.post('/delete-category/:id' , categoryController.deleteCategory)
 
 
 router.post(
