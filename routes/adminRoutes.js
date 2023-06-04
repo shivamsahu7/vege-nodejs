@@ -9,7 +9,7 @@ const subCategoryController = require('@controllers/admin/subCategoryController.
 const handleValidationErrors = require('@requests/handleValidationErrors.js')
 
 const { loginAdminValidationRules, handleloginAdminValidationErrors } = require('@requests/admin/loginValidation.js');
-const { addCategoryValidationRules, addSubCategoryValidationRules, updateCategoryValidationRules } = require('@requests/admin/categoryValidation.js');
+const { addCategoryValidationRules, addSubCategoryValidationRules, updateCategoryValidationRules , updateSubCategoryValidationRules} = require('@requests/admin/categoryValidation.js');
 
 
 router.post(
@@ -21,9 +21,7 @@ router.post(
 
 router.use("/" , adminMiddleware);
 
-router.get('/list-category',
-categoryController.categoryList
-)
+router.get('/list-category',categoryController.categoryList)
 
 router.post(
     '/add-category',
@@ -34,9 +32,9 @@ router.post(
     addCategoryValidationRules,
     handleValidationErrors,
     categoryController.addCategory
-)
+)   
  
-router.post(
+router.post( 
     '/update-category/:id',
     fileupload({
         useTempFiles:true,
@@ -59,6 +57,17 @@ router.post(
     addSubCategoryValidationRules,
     handleValidationErrors,
     subCategoryController.addSubCategory
+)
+
+router.post( 
+    '/update-subcategory/:id',
+    fileupload({
+        useTempFiles:true,
+        tempFileDir:'public'
+    }),
+    updateSubCategoryValidationRules,
+    handleValidationErrors,
+    subCategoryController.updateSubCategory
 )
 
 router.post('/delete-subcategory/:id' , subCategoryController.deleteSubCategory)

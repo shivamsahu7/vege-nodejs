@@ -17,5 +17,6 @@
     "PROFILE_DETAIL":"आपका प्रोफ़ाइल विवरण",
     "CATEGORY_ADD":"Category add successfully",
     "CATEGORY_DELETE":"Category is deleted",
-    "CATEGORY_UPDATE":"Categoryis updated"
+    "CATEGORY_UPDATE":"Categoryis updated",
+    "SUBCATEGORY_UPDATE":"SubCategory is updated"
 }
