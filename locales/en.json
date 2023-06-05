@@ -17,5 +17,7 @@
     "PROFILE_DETAIL":"Your profile detail.",
     "CATEGORY_ADD":"Category add successfully",
     "CATEGORY_DELETE":"Category is deleted",
-    "CATEGORY_UPDATE":"Categoryis updated"
+    "CATEGORY_UPDATE":"Category is updated",
+    "SUBCATEGORY_UPDATE":"SubCategory is updated"
+
 }

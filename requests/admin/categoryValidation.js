@@ -1,5 +1,5 @@
-const { body, checkExact } = require('express-validator');
-const{ Category } = require('@models')
+const { body } = require('express-validator');
+const{ Category, SubCategory } = require('@models')
 const { Op } = require('sequelize');
 
 const addCategoryValidationRules = [
@@ -138,11 +138,53 @@ const addSubCategoryValidationRules = [
         }
         return true;
     })
-]
+];
+
+const updateSubCategoryValidationRules = [
+    body('name').optional().notEmpty(),
+    body('slug').optional().trim()
+    .custom(async(value,{req})=>{
+        const checkSubCategory = await SubCategory.findOne({
+            where:{
+                slug: value,
+                id:{
+                    [Op.not]:req.params.id
+                }
+            }
+        })
+        // ex:- db.raw('SELECT * FROM `categories` where slug = "vegetables-fruits" AND NOT id =2')
+        if(checkSubCategory){
+            throw new Error('slug already Exist')
+        }
+        return true
+    }),
+    body('image').optional()    
+    .custom((value, { req }) => {
+        // check file extantion
+        const imageFile = req.files.image;
+        const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
+
+        if (!allowedMimeTypes.includes(imageFile.mimetype)) {
+            throw new Error('Invalid image file format');
+        }
+        return true;
+    })
+    .custom((value, { req }) => {
+        // check file size
+        const imageFile = req.files.image;
+        const maxSizeInBytes = 5 * 1024 * 1024; // 5MB
+  
+        if (imageFile.size > maxSizeInBytes) {
+          throw new Error('Image file size exceeds the limit');
+        }
+        return true;
+    })
+];
 
 
 module.exports = {
     addCategoryValidationRules,
     updateCategoryValidationRules,
     addSubCategoryValidationRules,
+    updateSubCategoryValidationRules,
 };
