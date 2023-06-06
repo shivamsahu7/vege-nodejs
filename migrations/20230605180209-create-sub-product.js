@@ -10,12 +10,11 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       name: {
+        allowNull: false,
         type: Sequelize.STRING
       },
       slug: {
-        type: Sequelize.STRING
-      },
-      image: {
+        allowNull: false,
         type: Sequelize.STRING
       },
       productId: {
