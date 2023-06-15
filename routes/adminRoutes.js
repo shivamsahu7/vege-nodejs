@@ -6,6 +6,7 @@ const authController = require('@controllers/admin/authController.js')
 const wareHouseController = require('@controllers/admin/wareHouseController.js')
 const categoryController = require('@controllers/admin/categoryController.js')
 const subCategoryController = require('@controllers/admin/subCategoryController.js')
+const productController = require('@controllers/admin/productController.js')
 
 const handleValidationErrors = require('@requests/handleValidationErrors.js')
 
@@ -93,5 +94,13 @@ router.post(
 )
  
 
+router.post(
+    '/add-product',
+    fileupload({
+        useTempFiles:true,
+        tempFileDir:'public'
+    }),
+    productController.addProduct
+)
 
-module.exports = router 
+module.exports = router
