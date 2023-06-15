@@ -92,7 +92,6 @@ router.post(
     handleValidationErrors,
     wareHouseController.updateWareHouse,
 )
- 
 
 router.post(
     '/add-product',
