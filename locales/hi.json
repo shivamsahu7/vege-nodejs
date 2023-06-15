@@ -18,5 +18,7 @@
     "CATEGORY_ADD":"Category add successfully",
     "CATEGORY_DELETE":"Category is deleted",
     "CATEGORY_UPDATE":"Categoryis updated",
-    "SUBCATEGORY_UPDATE":"SubCategory is updated"
+    "SUBCATEGORY_UPDATE":"SubCategory is updated",
+    "WEREHOUSE_ADD":"WareHouse is Created",
+    "WEREHOUSE_EXIST":"WareHouse is allready exist"
 }

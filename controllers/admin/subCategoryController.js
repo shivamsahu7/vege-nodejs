@@ -74,7 +74,7 @@ updateSubCategory = async (req, res) => {
     return res.status(StatusCodes.CREATED).json({
         status: true,
         msg: req.__('SUBCATEGORY_UPDATE'),
-        subCategory: newSubCategory
+        subCategory: checkSubCategory
     });
 }
 
