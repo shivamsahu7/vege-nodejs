@@ -9,6 +9,14 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      name: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
+      description: {
+        allowNull: false,
+        type: Sequelize.TEXT
+      },
       subCategoryId:{
         unique: true,
         allowNull: false,

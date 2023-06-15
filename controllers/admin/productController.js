@@ -1,5 +1,7 @@
-addProduct = async(req,res)=>{
-    res.send({"status":req.body.detail[0].id});
+addProduct =  (req,res)=>{
+    
+    // console.log(req.body)
+    return res.send({"data": req.body});
 }
 
 module.exports = {

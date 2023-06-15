@@ -11,6 +11,7 @@ const handleValidationErrors = require('@requests/handleValidationErrors.js')
 
 const { loginAdminValidationRules, handleloginAdminValidationErrors } = require('@requests/admin/loginValidation.js');
 const { addCategoryValidationRules, addSubCategoryValidationRules, updateCategoryValidationRules , updateSubCategoryValidationRules} = require('@requests/admin/categoryValidation.js');
+const { addProductValidationRules } = require('@requests/admin/productValidation.js')
 
 
 router.post(
@@ -20,7 +21,16 @@ router.post(
     authController.login
 )
 
-router.use("/" , adminMiddleware);
+// router.use("/" , adminMiddleware);
+
+router.get(
+    '/add-product',
+    fileupload({
+        useTempFiles:true,
+        tempFileDir:'public'
+    }),
+    productController.addProduct
+)
 
 router.get('/list-category',categoryController.categoryList)
 
@@ -79,6 +89,8 @@ router.post(
         useTempFiles:true,
         tempFileDir:'public'
     }),
+    addProductValidationRules,
+    handleValidationErrors,
     productController.addProduct
 )
 

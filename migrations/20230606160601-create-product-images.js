@@ -15,7 +15,7 @@ module.exports = {
       subProductId: {
         type: Sequelize.INTEGER
       },
-      image: {
+      name: {
         type: Sequelize.STRING
       },
       alt: {
