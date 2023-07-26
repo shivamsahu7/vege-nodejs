@@ -14,7 +14,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   SubProduct.init({
-    name: DataTypes.STRING,
+    name:DataTypes.STRING,
+    bodyHtml:DataTypes.STRING,
     slug: DataTypes.STRING,
     totalQuantity: DataTypes.INTEGER,
     productId: DataTypes.INTEGER,

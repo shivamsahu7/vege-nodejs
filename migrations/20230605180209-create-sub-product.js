@@ -13,6 +13,10 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING
       },
+      bodyHtml: {
+        allowNull: false,
+        type: Sequelize.TEXT
+      },
       slug: {
         allowNull: false,
         type: Sequelize.STRING
