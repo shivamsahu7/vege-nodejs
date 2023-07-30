@@ -53,7 +53,10 @@ const addProductValidationRules = [
     body('subProducts.*.warehouses.*.quantity').isInt({ min: 0 }),
     // image validation
     body('subProducts.*.images')
-    .isArray({ min: 1 })
+    .isArray({ min: 1 }),
+    body('subProducts.*.images.*.src').isString().notEmpty(),
+    body('subProducts.*.images.*.alt').isString().notEmpty(),
+    body('subProducts.*.images.*.position').isInt().notEmpty(),
 ]
 
 module.exports = {
