@@ -20,5 +20,9 @@
     "CATEGORY_UPDATE":"Categoryis updated",
     "SUBCATEGORY_UPDATE":"SubCategory is updated",
     "WEREHOUSE_ADD":"WareHouse is Created",
-    "WEREHOUSE_EXIST":"WareHouse is allready exist"
+    "WEREHOUSE_EXIST":"WareHouse is allready exist",
+    "WEREHOUSE_DELETED":"WAREHOUSE is deleted",
+    "WEREHOUSE_NOTFOUND":"WAREHOUSE is not found",
+    "WEREHOUSE_ALREADY_DELETED":"WAREHOUSE is already deleted"
+
 }

@@ -15,7 +15,7 @@ const addCategoryValidationRules = [
             throw new Error('slug already Exist')
         }
         return true
-    }),
+    }),   
     body('image')    
     .custom((value, { req }) => {
         // check file extantion
@@ -38,6 +38,7 @@ const addCategoryValidationRules = [
         return true;
     })
 ];
+
 const addSubCategoryValidationRules = [
 
     //name
@@ -138,8 +139,6 @@ const updateCategoryValidationRules = [
         return true;
     })
 ];
-
-
 
 const updateSubCategoryValidationRules = [
     body('name').optional().notEmpty(),

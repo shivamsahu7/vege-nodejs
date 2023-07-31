@@ -4,6 +4,7 @@ const fileupload = require('express-fileupload')
 const adminMiddleware = require('@middlewares/adminAuthMiddleware.js')
 const authController = require('@controllers/admin/authController.js')
 const wareHouseController = require('@controllers/admin/wareHouseController.js')
+
 const categoryController = require('@controllers/admin/categoryController.js')
 const subCategoryController = require('@controllers/admin/subCategoryController.js')
 const productController = require('@controllers/admin/productController.js')
@@ -92,6 +93,12 @@ router.post(
     updateWareHouseValidationRules,
     handleValidationErrors,
     wareHouseController.updateWareHouse,
+)
+
+router.delete(
+    '/delete-warehouse/:id',
+    handleValidationErrors,
+    wareHouseController.deleteWareHouse
 )
 
 router.post(

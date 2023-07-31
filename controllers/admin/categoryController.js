@@ -48,47 +48,6 @@ addCategory = async (req, res) => {
     });
 }
 
-deleteCategory = async (req, res) => {
-    try {
-
-        const { id } = req.params
-
-        let findUser = await Category.findOne({
-            where: {
-                id: id,
-            },
-        })
-
-        let filePath = path.resolve(`public/files/category/${findUser.image}`)
-
-        if (fs.existsSync(filePath)) {
-            fs.unlink(filePath, (error) => {
-                if (error) {
-                    console.error('Error deleting file:', err);
-                } else {
-                    console.log('File deleted successfully');
-                }
-            })
-        } else {
-            console.log('File does not exist');
-        }
-
-        let deleteCategory = await Category.destroy({
-            where: {
-                id: id,
-            }
-        })
-
-        return res.status(200).send({
-            status: true,
-            msg: req.__('CATEGORY_DELETE'),
-        })
-
-    } catch (err) {
-        console.log(err)
-        return res.status(400).json({ error: req.__('SERVER_ISSUE') });
-    }
-}
 
 updateCategory = async (req, res) => {
     // return res.send({R : 'case1'}) 
@@ -139,11 +98,52 @@ updateCategory = async (req, res) => {
 
 }
 
+deleteCategory = async (req, res) => {
+    try {
+
+        const { id } = req.params
+
+        let findUser = await Category.findOne({
+            where: {
+                id: id,
+            },
+        })
+
+        let filePath = path.resolve(`public/files/category/${findUser.image}`)
+
+        if (fs.existsSync(filePath)) {
+            fs.unlink(filePath, (error) => {
+                if (error) {
+                    console.error('Error deleting file:', err);
+                } else {
+                    console.log('File deleted successfully');
+                }
+            })
+        } else {
+            console.log('File does not exist');
+        }
+
+        let deleteCategory = await Category.destroy({
+            where: {
+                id: id,
+            }
+        })
+
+        return res.status(200).send({
+            status: true,
+            msg: req.__('CATEGORY_DELETE'),
+        })
+
+    } catch (err) {
+        console.log(err)
+        return res.status(400).json({ error: req.__('SERVER_ISSUE') });
+    }
+}
 
 
 module.exports = {
     categoryList,
     addCategory,
     deleteCategory,
-    updateCategory
+    updateCategory,
 }

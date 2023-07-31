@@ -17,9 +17,10 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING,
     state: DataTypes.STRING,
     city: DataTypes.STRING,
-    lat: DataTypes.FLOAT,
-    lng: DataTypes.FLOAT,
-    status: DataTypes.BOOLEAN
+    lat: DataTypes.STRING,
+    lng: DataTypes.STRING,
+    status: DataTypes.BOOLEAN,
+    deletedAt:DataTypes.DATE
   }, {
     sequelize,
     modelName: 'WareHouse',
