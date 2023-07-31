@@ -1,7 +1,6 @@
 const { body } = require('express-validator');
 const addProductValidationRules = [
     body('name').notEmpty(),
-    body('description').notEmpty(),
     body('subCategoryId').notEmpty(),
     body('variantAttributes')
     .custom((value,{req})=>{
@@ -26,7 +25,7 @@ const addProductValidationRules = [
         if(!Array.isArray(value) || value.length < 1){
             throw new Error('Subproduct must have a minimum of one');
         }
-        
+        // check variantAttributes is exist in subproduct
         let errors = [];
         value.forEach((currentValue,index)=>{
             variantKeys.forEach((currentVariantValue)=>{
@@ -35,7 +34,7 @@ const addProductValidationRules = [
                 }
             })
         })
-        console.log(errors);
+
         if(errors.length >= 1){
             throw new Error(errors);
         }else{
@@ -43,20 +42,21 @@ const addProductValidationRules = [
         }
     }),
     body('subProducts.*.name').notEmpty(),
+    body('subProducts.*.bodyHtml').notEmpty(),
     body('subProducts.*.slug').notEmpty(),
     body('subProducts.*.price').notEmpty(),
-    body('subProducts.*.warehouse')
-    .optional({ checkFalsy: true })
+    // warehouse validation 
+    body('subProducts.*.warehouses')
     .isArray({ min: 1 })
     .withMessage('warehouse must be an array with at least one item'),
-    body('subProducts.*.warehouse.*.id')
-    .optional({ checkFalsy: true })
-    .isNumeric({ min: 1 })
-    .withMessage('warehouse id must be a positive number'),
-    body('subProducts.*.warehouse.*.quantity')
-    .optional({ checkFalsy: true })
-    .isNumeric({ min: 0 })
-    .withMessage('warehouse quantity must be a non-negative number'),
+    body('subProducts.*.warehouses.*.id').isInt(),
+    body('subProducts.*.warehouses.*.quantity').isInt({ min: 0 }),
+    // image validation
+    body('subProducts.*.images')
+    .isArray({ min: 1 }),
+    body('subProducts.*.images.*.src').isString().notEmpty(),
+    body('subProducts.*.images.*.alt').isString().notEmpty(),
+    body('subProducts.*.images.*.position').isInt().notEmpty(),
 ]
 
 module.exports = {
