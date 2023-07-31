@@ -10,7 +10,6 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       subCategoryId:{
-        unique: true,
         allowNull: false,
         type: Sequelize.INTEGER
       },
