@@ -17,6 +17,7 @@ const addProductValidationRules = [
         }
         return true;
     }),
+
     body('subProducts')
     .custom((value,{req})=>{
         // dynamic variant attribute validate
@@ -50,6 +51,7 @@ const addProductValidationRules = [
     .isArray({ min: 1 })
     .withMessage('warehouse must be an array with at least one item'),
     body('subProducts.*.warehouses.*.id').isInt(),
+    
     body('subProducts.*.warehouses.*.quantity').isInt({ min: 0 }),
     // image validation
     body('subProducts.*.images')

@@ -1,8 +1,8 @@
 const { query } = require('express');
-const { body } = require('express-validator');
+const { body, param } = require('express-validator');
 const { WareHouse } = require('@models');
-const { ResultWithContextImpl } = require('express-validator/src/chain');
-const { error } = require('winston');
+const { moment } = require('moment')
+
 
 const addWareHouseValidationRules = [
 
@@ -54,19 +54,20 @@ const updateWareHouseValidationRules = [
 ]
 
  const deleteWareHouseValidationRules = [
-    // query('id').isInt().withMessage('error wareHouse id is not found')
-    // .custom(async(value , {req})=>{
+    param('id').isInt().withMessage('invalid response')
+    .custom(async(value )=>{
+        let checkWareHouse = await WareHouse.findOne({
+            where:{
+              id:value
+            }
+        })
+        console.log(checkWareHouse)
 
-    //     let checkWareHouse = await WareHouse.findOne({
-    //         where:{
-    //           id:value
-    //         }
-    //     })
-
-    //     if(!checkWareHouse){
-    //     throw new Error()
-    //     }
-    // }).withMessage("warehouse is not exist")
+        // checkWareHouse.deletedAt = 
+        if(!checkWareHouse){
+        throw Error('wareHouse is not found');
+        }
+    })
  ]
 
 module.exports = {
