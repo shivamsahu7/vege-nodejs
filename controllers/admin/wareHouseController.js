@@ -2,8 +2,9 @@ const { WareHouse } = require("@models")
 const path = require('path');
 const { StatusCodes } = require('http-status-codes');
 const { SubCategory } = require('@models');
+const moment = require('moment')
 const fs = require("fs");
-const { check } = require('express-validator');
+
 
 ListWareHouse = async(req , res)=>{
     let DataList = await WareHouse.findAll({
@@ -82,7 +83,25 @@ updateWareHouse = async (req, res) => {
     return res.send({ r: checkWareHouse })
 }
 
+deleteWareHouse = async(req , res)=>{
+
+    let checkWareHouse = await WareHouse.findOne({
+        id:req.params.id
+    })
+
+    let currentDate = moment().format('YYYY-MM-DD')
+
+    checkWareHouse.deletedAt = currentDate;
+    checkWareHouse.save();
+
+return res.send({
+    status:true,
+    msg:req.__('WEREHOUSE_DELETED')
+})
+}
+
 module.exports = {
     createWareHouse,
-    updateWareHouse
+    updateWareHouse,
+    deleteWareHouse,
 } 

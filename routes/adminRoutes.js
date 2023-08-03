@@ -16,7 +16,7 @@ const { loginAdminValidationRules } = require('@requests/admin/loginValidation.j
 const { addCategoryValidationRules, addSubCategoryValidationRules, updateCategoryValidationRules, updateSubCategoryValidationRules } = require('@requests/admin/categoryValidation.js');
 const { addProductValidationRules } = require('@requests/admin/productValidation.js')
 
-const { addWareHouseValidationRules , updateWareHouseValidationRules } = require('@requests/admin/wareHousevalidation.js')
+const { addWareHouseValidationRules , updateWareHouseValidationRules , deleteWareHouseValidationRules} = require('@requests/admin/wareHousevalidation.js')
 
 router.post(
     '/login',
@@ -95,11 +95,12 @@ router.post(
     wareHouseController.updateWareHouse,
 )
 
-// router.delete(
-//     '/delete-warehouse/:id',
-//     handleValidationErrors,
-//     wareHouseController.deleteWareHouse
-// )
+router.delete(
+    '/delete-warehouse/:id',
+    deleteWareHouseValidationRules,
+    handleValidationErrors,
+    wareHouseController.deleteWareHouse,
+)
 
 router.post(
     '/add-product',
