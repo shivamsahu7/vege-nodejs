@@ -1,7 +1,7 @@
 const nodemailer = require('nodemailer');
 const ejs = require('ejs');
 const path = require('path');
-const mail = require('./../config/mail.js')
+const mail = require('../config/mail.js')
 
 async function forgotPasswordMail(recipient, templateData) {
     // mail send
