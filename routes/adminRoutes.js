@@ -95,11 +95,11 @@ router.post(
     wareHouseController.updateWareHouse,
 )
 
-router.delete(
-    '/delete-warehouse/:id',
-    handleValidationErrors,
-    wareHouseController.deleteWareHouse
-)
+// router.delete(
+//     '/delete-warehouse/:id',
+//     handleValidationErrors,
+//     wareHouseController.deleteWareHouse
+// )
 
 router.post(
     '/add-product',
