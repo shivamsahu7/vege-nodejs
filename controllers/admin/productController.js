@@ -2,6 +2,7 @@ const { Product,productVariants,VariantAttributes } = require('@models');
 
 addProduct = async (req,res)=>{
     try{
+        return res.send({req:req.body})
         const {subCategoryId,variantAttributes} = req.body
 
         // product create

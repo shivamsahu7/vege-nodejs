@@ -1,5 +1,5 @@
-const { body, check } = require('express-validator');
-const { error } = require('winston');
+const { body } = require('express-validator');
+const slugify = require("slugify")
 const { WareHouse, SubCategory, SubProduct } = require('@models');
 
 const addProductValidationRules = [
@@ -46,7 +46,22 @@ const addProductValidationRules = [
                 throw new Error('Subproduct must have a minimum of one');
             }
 
-            // check variantAttributes is exist in subproduct
+            const subProducts = req.body.subProducts
+
+            // Extract slugs into one array
+            const subProductSlugArray = subProducts.map((subProduct) => subProduct.slug);
+
+            const hasDuplicateslugs = subProductSlugArray.length !== new Set(subProductSlugArray).size;
+
+            if(hasDuplicateslugs){
+                throw new Error('Duplicate slug in request')
+            }
+
+           let wareHouseArray = subProducts.map((subProduct)=>{
+            subProduct.warehouses
+           })
+
+            // check variantAttributes is exist in subproducts
             let errors = [];
 
             value.forEach((currentValue, index) => {
@@ -56,6 +71,8 @@ const addProductValidationRules = [
                     }
                 })
             })
+
+            
 
             if (errors.length >= 1) {
                 throw new Error(errors);
@@ -67,15 +84,17 @@ const addProductValidationRules = [
     body('subProducts.*.name').notEmpty().withMessage('subProduct must be required'),
     body('subProducts.*.bodyHtml').notEmpty(),
     body('subProducts.*.slug').notEmpty().withMessage('slug is required')
-        .custom(async (slug) => {
+        .custom(async (slug , {req}) => {
+    
+            // console.log(checkSlugType, "...............")
 
-            const checkSubProduct = await SubProduct.findOne({
+            const checkSlug = await SubProduct.findOne({
                 where: {
                     slug: slug
                 }
             })
 
-            if (checkSubProduct) {
+            if (checkSlug) {
                 throw new Error("Slug already Exist")
             }
             return true
@@ -83,9 +102,19 @@ const addProductValidationRules = [
 
     body('subProducts.*.price').notEmpty(),
     // warehouse validation 
-    body('subProducts.*.warehouses')
-        .isArray({ min: 1 })
-        .withMessage('warehouse must be an array with at least one item'),
+    body('subProducts.*.warehouses').isArray({ min: 1 }).withMessage('warehouse must be an array with at least one item')
+    .custom((wareHouses)=>{
+
+        let wareHouseIds = wareHouses.map((wareHouse)=> wareHouse.id);
+
+        let hasDuplicateID = wareHouses.length !== new Set(wareHouseIds).size
+
+        if(hasDuplicateID){
+            throw new Error('Duplicate wareHouses in request')
+        }
+        return true
+    })
+    ,
     body('subProducts.*.warehouses.*.id').isInt().withMessage("Warehouse is required")
         .custom(async (warehouseId) => {
 
