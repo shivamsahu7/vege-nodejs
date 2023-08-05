@@ -11,7 +11,7 @@ addProduct = async (req,res)=>{
         })
 
         // product -> variants create
-        variantAttributesKeys = Object.keys(variantAttributes)
+        const variantAttributesKeys = Object.keys(variantAttributes)
 
         const variants = [];
         variantAttributesKeys.forEach(variantValue => {
