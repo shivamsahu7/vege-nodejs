@@ -1,5 +1,5 @@
 const { body } = require('express-validator');
-const slugify = require("slugify")
+
 const { WareHouse, SubCategory, SubProduct } = require('@models');
 
 const addProductValidationRules = [
