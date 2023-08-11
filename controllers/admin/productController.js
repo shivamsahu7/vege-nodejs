@@ -1,8 +1,10 @@
-const { Product, productVariants, VariantAttributes, SubProduct } = require('@models');
+const { Product, productVariants, VariantAttributes, SubProduct,productImages ,WarehouseStockHistory} = require('@models');
+const util = require('util');
+const subproduct = require('../../models/subproduct');
 
 addProduct = async (req, res) => {
     try {
-        console.log( "start")
+        console.log("start")
 
         const { subCategoryId, variantAttributes, subProducts } = req.body
 
@@ -10,7 +12,7 @@ addProduct = async (req, res) => {
         const newProduct = await Product.create({
             subCategoryId: subCategoryId
         })
-         
+
         console.log("start:2")
 
         // product -> variants create
@@ -38,18 +40,16 @@ addProduct = async (req, res) => {
         const newVariantAttribute = await VariantAttributes.bulkCreate(attributes)
 
         console.log("start:5")
-        
+
         // product -> subproduct
-        // const newsubProducts = []
-        let subProductImages = []; 
-        await subProducts.forEach(async (subProduct) => {
-            console.log("start 5.9")
+        const newsubProducts = []
+
+        subProducts.forEach(async (subProduct) => {
             const subProductData = variantAttributesKeys.map((variant) => {
                 return { [variant]: subProduct[variant] }
             })
-            console.log("start:6")
 
-            const storeNewSubProduct = await SubProduct.create({
+            newsubProducts.push({
                 productId: newProduct.id,
                 name: subProduct.name,
                 bodyHtml: subProduct.bodyHtml,
@@ -57,32 +57,46 @@ addProduct = async (req, res) => {
                 price: subProduct.price,
                 totalQuantity: subProduct.warehouses.reduce((sum, warehouse) => sum + warehouse.quantity, 0),
                 data: JSON.stringify(subProductData)
-            });
+            })
 
-            console.log("start:7")
+        });
+        const storeNewSubProduct = await SubProduct.bulkCreate(newsubProducts);
 
-            console.log(storeNewSubProduct , "1")
+        let subProductImages = [];
+        let subProductWarehouseHistory = []
 
+        let i =0;
+        subProducts.forEach(async (subProduct) => {
+            // product -> subproduct -> subproduct images
             subProduct.images.forEach((image) => {
                 subProductImages.push({
                     src: image.src,
                     alt: image.alt,
                     position: image.position,
                     productId: newProduct.id,
-                    subProductId: storeNewSubProduct.id
-                }) 
+                    subProductId: storeNewSubProduct[i]['id']
+                })
             })
 
+            // product -> subproduct -> warehouse history
+            subProduct.warehouses.forEach((wareHouseHistory)=>{
+                subProductWarehouseHistory.push({
+                    warehouseId:wareHouseHistory.id,
+                    subProductId:storeNewSubProduct[i]['id'],
+                    quantity:wareHouseHistory.quantity,
+                    actionType:"add"
+                })
+            })
+            i++;
         });
-        console.log("start:8")
+        const storeSubProductImages = await productImages.bulkCreate(subProductImages);
+        const storeWareHouseHistory= await WarehouseStockHistory.bulkCreate(subProductWarehouseHistory);
 
-        console.log(subProductImages)
-        return res.send({subProductImages})
-
-        // const storeNewSubProduct = await SubProduct.bulkCreate(newsubProducts);
-
-
-       //"" return res.send({ "data":  });
+        return res.staus(200).send({
+            status:true,
+            msg:req.__('PRODUCT_ADDED')
+        
+        });
     } catch (err) {
         console.log(err)
     }
