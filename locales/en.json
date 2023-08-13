@@ -21,10 +21,11 @@
     "SUBCATEGORY_UPDATE":"SubCategory is updated",
     "WEREHOUSE_ADD":"WareHouse is Created",
     "WEREHOUSE_EXIST":"WareHouse is allready exist",
-    "WEREHOUSE_DELETED":"WAREHOUSE is deleted",
-    "WEREHOUSE_NOTFOUND":"WAREHOUSE is not found",
-    "WEREHOUSE_ALREADY_DELETED":"WAREHOUSE is already deleted",
-    "PRODUCT_ADDED":"PRODUCT added successfully"
+    "WEREHOUSE_DELETED":"WareHouse is deleted",
+    "WEREHOUSE_NOTFOUND":"WareHouse is not found",
+    "WEREHOUSE_ALREADY_DELETED":"WareHouse is already deleted",
+    "PRODUCT_ADDED":"Product added successfully",
+    "PRODUCT_LIST":"Product List"
 
 
 }

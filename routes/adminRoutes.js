@@ -111,6 +111,14 @@ router.post(
     addProductValidationRules,
     handleValidationErrors,
     productController.addProduct
-)
+);
+
+router.get("/detail-product/:id" , productController.getProductDetail);
+router.get("/list-product" , productController.productList);
+router.get("/edit-product/:id" , productController.editProduct);
+
+
+
+
 
 module.exports = router

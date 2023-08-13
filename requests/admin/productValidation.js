@@ -142,6 +142,9 @@ const addProductValidationRules = [
     body('subProducts.*.images.*.position').isInt().notEmpty(),
 ]
 
+const editProductValidationRules =[
+]
+
 module.exports = {
     addProductValidationRules
 }

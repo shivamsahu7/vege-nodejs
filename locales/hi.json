@@ -24,7 +24,7 @@
     "WEREHOUSE_DELETED":"WAREHOUSE is deleted",
     "WEREHOUSE_NOTFOUND":"WAREHOUSE is not found",
     "WEREHOUSE_ALREADY_DELETED":"WAREHOUSE is already deleted",
-    "PRODUCT_ADDED":"PRODUCT added successfully"
-
+    "PRODUCT_ADDED":"PRODUCT added successfully",
+    "PRODUCT_LIST":"Product List"
 
 }
