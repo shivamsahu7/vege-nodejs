@@ -1,6 +1,6 @@
-const { body } = require('express-validator');
-
-const { WareHouse, SubCategory, SubProduct } = require('@models');
+const { body, param } = require('express-validator');
+const { Op } = require('sequelize');
+const { WareHouse, SubCategory, SubProduct, Product, productVariants, VariantAttributes } = require('@models');
 
 const addProductValidationRules = [
     body('name').notEmpty(),
@@ -53,13 +53,13 @@ const addProductValidationRules = [
 
             const hasDuplicateslugs = subProductSlugArray.length !== new Set(subProductSlugArray).size;
 
-            if(hasDuplicateslugs){
+            if (hasDuplicateslugs) {
                 throw new Error('Duplicate slug in request')
             }
 
-           let wareHouseArray = subProducts.map((subProduct)=>{
-            subProduct.warehouses
-           })
+            let wareHouseArray = subProducts.map((subProduct) => {
+                subProduct.warehouses
+            })
 
             // check variantAttributes is exist in subproducts
             let errors = [];
@@ -72,7 +72,7 @@ const addProductValidationRules = [
                 })
             })
 
-            
+
 
             if (errors.length >= 1) {
                 throw new Error(errors);
@@ -84,9 +84,8 @@ const addProductValidationRules = [
     body('subProducts.*.name').notEmpty().withMessage('subProduct must be required'),
     body('subProducts.*.bodyHtml').notEmpty(),
     body('subProducts.*.slug').notEmpty().withMessage('slug is required')
-        .custom(async (slug , {req}) => {
-    
-            // console.log(checkSlugType, "...............")
+        .custom(async (slug, { req }) => {
+
 
             const checkSlug = await SubProduct.findOne({
                 where: {
@@ -103,17 +102,17 @@ const addProductValidationRules = [
     body('subProducts.*.price').notEmpty(),
     // warehouse validation 
     body('subProducts.*.warehouses').isArray({ min: 1 }).withMessage('warehouse must be an array with at least one item')
-    .custom((wareHouses)=>{
+        .custom((wareHouses) => {
 
-        let wareHouseIds = wareHouses.map((wareHouse)=> wareHouse.id);
+            let wareHouseIds = wareHouses.map((wareHouse) => wareHouse.id);
 
-        let hasDuplicateID = wareHouses.length !== new Set(wareHouseIds).size
+            let hasDuplicateID = wareHouses.length !== new Set(wareHouseIds).size
 
-        if(hasDuplicateID){
-            throw new Error('Duplicate wareHouses in request')
-        }
-        return true
-    })
+            if (hasDuplicateID) {
+                throw new Error('Duplicate wareHouses in request')
+            }
+            return true
+        })
     ,
     body('subProducts.*.warehouses.*.id').isInt().withMessage("Warehouse is required")
         .custom(async (warehouseId) => {
@@ -142,9 +141,148 @@ const addProductValidationRules = [
     body('subProducts.*.images.*.position').isInt().notEmpty(),
 ]
 
-const editProductValidationRules =[
+const editProductValidationRules = [
+    param('id').isInt().withMessage('id should be an integer')
+        .custom(async (id, { req }) => {
+            let checkProduct = await Product.count({
+                where: {
+                    id: id
+                }
+            });
+
+            if (checkProduct == 0) {
+                throw new Error("no product found ")
+            }
+
+            return true
+        }),
+    body('subCategoryId').isInt().withMessage('Category id is not fount')
+        .custom(async (subCategoryId, { req }) => {
+            let checkSubCategory = await SubCategory.count({
+                where: {
+                    id: subCategoryId
+                }
+            })
+            if (checkSubCategory == 0) {
+                throw new Error('subCategory is not found')
+            }
+            return true
+        })
+]
+
+editProductVariantValidationRules = [
+    param('variantId').isInt().withMessage('productVariants is not found')
+        .custom(async (productVariantId) => {
+            const findProductVariants = await productVariants.count({
+                where: {
+                    id: productVariantId
+                }
+            });
+            if (findProductVariants == 0) {
+                throw Error("Product variants are not found")
+            }
+            return true
+        }),
+    body('value').isString().withMessage('value must be string')
+];
+
+editVariantAttributeValidationRules = [
+    param('attributeId').isInt().withMessage('Attribute Id must be integer')
+        .custom(async (attributeId) => {
+            const checkVariantAttributes = await VariantAttributes.count({
+                where: {
+                    id: attributeId
+                }
+            })
+
+            if (checkVariantAttributes == 0) {
+                throw new Error("No attribute exist")
+            }
+            return true
+        }),
+
+]
+
+editSubProductValidationRules = [
+    param('subProductId').isInt().withMessage('subProduct Id must be integer')
+        .custom(async (subProductId) => {
+
+            const checksubProduct = await SubProduct.count({
+                where: {
+                    id: subProductId
+                }
+            })
+            if (checksubProduct == 0) {
+                throw new Error("No attribute exist")
+            }
+            return true
+        }),
+    body('name').isString().withMessage('name must be String'),
+    body('bodyHtml').isString().withMessage('bodyHTML must be String'),
+    body('slug').isString().withMessage('slug must be in String')
+        .custom(async (slug, { req }) => {
+            const checkSlug = await SubProduct.findOne({
+                where: {
+                    slug: slug,
+                    id: {
+                        [Op.not]: req.params.id,
+                    }
+                }
+            })
+
+            if (checkSlug != null) {
+                throw new Error('duplicate slug')
+            }
+            return true
+        }),
+    body('price').isInt().withMessage('price must be intiger'),
+    body('data').isObject().withMessage('data must be json Type')
+        .custom(async (data, { req }) => {
+            const subProduct = await SubProduct.findOne({
+                where: {
+                    id: req.params.subProductId
+                },
+                attributes: [],
+                include: {
+                    model: productVariants,
+                    as: 'productVariants',
+                    attributes: ['id', 'value'],
+                    include:{
+                        model:VariantAttributes,
+                        as:'variatAttributes',
+                        attributes:['id' , 'value']
+                    }
+                }
+            })
+
+            let errors = []
+            subProduct.productVariants.forEach((variant) => {
+                if (!data.hasOwnProperty(variant.value)) {
+                    errors.push(variant.value)  
+                    return;
+                }
+                const attributes = variant.variatAttributes.map((attribute)=>{
+                    return attribute.value
+                })
+                if(!attributes.includes(req.body.data[[variant.value]])){
+                    errors.push(req.body.data[[variant.value]])
+                }
+            })
+
+            if (errors.length >= 1) {
+                throw new Error(errors);
+            } else {
+                return true;
+            }
+        })
+
+        
 ]
 
 module.exports = {
-    addProductValidationRules
+    addProductValidationRules,
+    editProductValidationRules,
+    editProductVariantValidationRules,
+    editVariantAttributeValidationRules,
+    editSubProductValidationRules
 }

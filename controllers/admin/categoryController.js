@@ -101,8 +101,7 @@ updateCategory = async (req, res) => {
 deleteCategory = async (req, res) => {
     try {
 
-        const { id } = req.params
-
+        const { id } = req.params;
         let findUser = await Category.findOne({
             where: {
                 id: id,

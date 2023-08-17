@@ -15,7 +15,8 @@ module.exports = (sequelize, DataTypes) => {
   }
   VariantAttributes.init({
     variantId: DataTypes.INTEGER,
-    value: DataTypes.STRING
+    value: DataTypes.STRING,
+    deletedAt: DataTypes.DATE,
   }, {
     sequelize,
     modelName: 'VariantAttributes',

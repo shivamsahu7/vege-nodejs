@@ -14,9 +14,9 @@ const handleValidationErrors = require('@requests/handleValidationErrors.js')
 const { loginAdminValidationRules } = require('@requests/admin/loginValidation.js');
 
 const { addCategoryValidationRules, addSubCategoryValidationRules, updateCategoryValidationRules, updateSubCategoryValidationRules } = require('@requests/admin/categoryValidation.js');
-const { addProductValidationRules } = require('@requests/admin/productValidation.js')
+const { addProductValidationRules, editProductValidationRules , editVariantAttributeValidationRules , editSubProductValidationRules} = require('@requests/admin/productValidation.js')
 
-const { addWareHouseValidationRules , updateWareHouseValidationRules , deleteWareHouseValidationRules} = require('@requests/admin/wareHousevalidation.js')
+const { addWareHouseValidationRules, updateWareHouseValidationRules, deleteWareHouseValidationRules } = require('@requests/admin/wareHousevalidation.js')
 
 router.post(
     '/login',
@@ -25,9 +25,9 @@ router.post(
     authController.login
 )
 
-router.use("/" , adminMiddleware);
+router.use("/", adminMiddleware);
 
-router.get('/list-category',categoryController.categoryList)
+router.get('/list-category', categoryController.categoryList)
 
 router.post(
     '/add-category',
@@ -105,17 +105,44 @@ router.delete(
 router.post(
     '/add-product',
     fileupload({
-        useTempFiles:true,
-        tempFileDir:'public'
+        useTempFiles: true,
+        tempFileDir: 'public'
     }),
     addProductValidationRules,
     handleValidationErrors,
     productController.addProduct
 );
 
-router.get("/detail-product/:id" , productController.getProductDetail);
-router.get("/list-product" , productController.productList);
-router.get("/edit-product/:id" , productController.editProduct);
+router.get("/detail-product/:id", productController.getProductDetail);
+router.get("/list-product", productController.productList);
+
+router.put(
+    "/edit-product/:id",
+    editProductValidationRules,
+    handleValidationErrors,
+    productController.editProduct
+);
+
+router.put(
+    "/edit-product-Variant/:variantId",
+    editProductVariantValidationRules,
+    handleValidationErrors,
+    productController.editProductVariants,
+);
+
+router.put(
+    "/edit-product-Variant-attribute/:attributeId",
+    editVariantAttributeValidationRules,
+    handleValidationErrors,
+    productController.editVariantAttribute,
+);
+
+router.put(
+    "/edit-subProduct/:subProductId",
+    editSubProductValidationRules,
+    handleValidationErrors,
+    productController.editSubProduct,
+);
 
 
 

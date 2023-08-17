@@ -1,18 +1,16 @@
-const {SubCategory, Product, productVariants, VariantAttributes, SubProduct, productImages, WarehouseStockHistory } = require('@models');
-const {StatusCodes}  = require('http-status-codes')
+const { SubCategory, Product, productVariants, VariantAttributes, SubProduct, productImages, WarehouseStockHistory } = require('@models');
+const { StatusCodes } = require('http-status-codes')
 // const db = require("@models/index.js")
 addProduct = async (req, res) => {
     try {
-        console.log("start")
 
-        const { subCategoryId, variantAttributes, subProducts } = req.body
+        const { subCategoryId, variantAttributes, subProducts, name } = req.body
 
         // product create
         const newProduct = await Product.create({
-            subCategoryId: subCategoryId
+            subCategoryId: subCategoryId,
+            name: name
         })
-
-        console.log("start:2")
 
         // product -> variants create
         const variantAttributesKeys = Object.keys(variantAttributes)
@@ -21,9 +19,6 @@ addProduct = async (req, res) => {
         variantAttributesKeys.forEach(variantValue => {
             variants.push({ productId: newProduct.id, value: variantValue })
         });
-
-        console.log("start:3")
-
 
         const newProductVariants = await productVariants.bulkCreate(variants)
 
@@ -34,18 +29,19 @@ addProduct = async (req, res) => {
                 attributes.push({ variantId: productVariant.id, value: variantAttribute })
             })
         })
-        console.log("start:4")
 
         const newVariantAttribute = await VariantAttributes.bulkCreate(attributes)
-
-        console.log("start:5")
 
         // product -> subproduct
         const newsubProducts = []
 
         subProducts.forEach(async (subProduct) => {
-            const subProductData = variantAttributesKeys.map((variant) => {
-                return { [variant]: subProduct[variant] }
+            // const subProductData = variantAttributesKeys.map((variant) => {
+            //     return { [variant]: subProduct[variant] }
+            // })
+            const subProductData = {}
+            variantAttributesKeys.forEach((variant) => {
+                subProductData[[variant]] = subProduct[variant]
             })
 
             newsubProducts.push({
@@ -101,36 +97,36 @@ addProduct = async (req, res) => {
     }
 }
 
-getProductDetail = async(req, res) => {
-    const {id} = req.params
- 
+getProductDetail = async (req, res) => {
+    const { id } = req.params
+
     const productData = await Product.findOne({
-        where:{
-            id:id
+        where: {
+            id: id
         },
         include: [
             {
-                model:SubProduct,
-                as:"subProducts",
+                model: SubProduct,
+                as: "subProducts",
                 include: {
-                    model:productImages,
-                    as:"productImages",
+                    model: productImages,
+                    as: "productImages",
                 }
-            },{
-                model:SubCategory,
-                as:"subCategory"
-            },{
-                model:productVariants,
-                as:"productVariants",
-                include:{
-                    model:VariantAttributes,
-                    as:"variatAttributes"
+            }, {
+                model: SubCategory,
+                as: "subCategory"
+            }, {
+                model: productVariants,
+                as: "productVariants",
+                include: {
+                    model: VariantAttributes,
+                    as: "variatAttributes"
                 }
             }
         ]
     })
-    
-    return res.send({productData});
+
+    return res.send({ productData });
     // relation data one-to-many
     // const data = await db.Users.findAll({
     //     include:{
@@ -152,7 +148,7 @@ getProductDetail = async(req, res) => {
     // Product.hasMany(subProduct , )
 }
 
-productList = async (req , res)=>{
+productList = async (req, res) => {
     const pageNumber = parseInt(req.query.offset);        // The page number you want to retrieve
     const pageSize = parseInt(req.query.limit);         // The number of records per page
     const offset = (pageNumber - 1) * pageSize;
@@ -165,20 +161,116 @@ productList = async (req , res)=>{
     })
 
     return res.status(StatusCodes.ACCEPTED).send({
-        status:true,
-        msg:req.__('PRODUCT_LIST'),
-        totalPages:Math.ceil(totalNumberOfPages/pageSize),
-        products:productData
+        status: true,
+        msg: req.__('PRODUCT_LIST'),
+        totalPages: Math.ceil(totalNumberOfPages / pageSize),
+        products: productData
     })
 }
 
-editProduct = (req , res)=>{
+editProduct = async (req, res) => {
 
+    const productData = await Product.update({
+        name: req.body.name,
+        subCategoryId: req.body.subCategoryId
+    }, {
+        where: {
+            id: req.params.id
+        }
+    })
+    if (productData[0] >= 1) {
+        return res.status(StatusCodes.ACCEPTED).send({
+            status: true,
+            msg: req.__('UPDATE_PRODUCT')
+        })
+    } else {
+        return res.status(StatusCodes.BAD_REQUEST).send({
+            status: false,
+            msg: req.__("NOT_UPDATE_PRODUCT")
+        })
+    }
+}
+
+editProductVariants = async (req, res) => {
+
+    const productVariantUpdate = await productVariants.update({
+        value: req.body.value
+    }, {
+        where: {
+            id: req.params.variantId
+        }
+    })
+
+    if (productVariantUpdate == 0) {
+        return res.status(StatusCodes.BAD_REQUEST).send({
+            status: true,
+            msg: req.__("PRODUCT_VARIANT_NOT_UPDATED")
+        })
+    } else {
+        return res.status(StatusCodes.ACCEPTED).send({
+            status: true,
+            msg: req.__("PRODUCT_VARIANT_UPDATED")
+        })
+    }
+}
+
+editVariantAttribute = async (req, res) => {
+    const updateVariantAttributes = await VariantAttributes.update({
+        value: req.body.value
+    }, {
+        where: {
+            id: req.params.attributeId
+        }
+    })
+
+    if (updateVariantAttributes == 0) {
+        return res.status(StatusCodes.BAD_REQUEST).send({
+            status: false,
+            msg: "variant attribute is not updated"
+        })
+    }
+
+    return res.status(StatusCodes.ACCEPTED).send({
+        status: true,
+        msg: "variant attribute has been updated"
+    })
+}
+
+editSubProduct = async (req, res) => {
+    const { name, bodyHtml, slug, price, data } = req.body
+
+
+
+    const UpdateSubProduct = await SubProduct.update({
+        name: name,
+        bodyHtml: bodyHtml,
+        slug: slug,
+        price: price,
+        data: JSON.stringify(data)
+    }, {
+        where: {
+            id: req.params.subProductId,
+        }
+    })
+
+    if (UpdateSubProduct == 0) {
+        return res.send({
+            status: false,
+            msg: "subProduct is not updated"
+        })
+    }
+    return res.send({
+        status: true,
+        msg: "subProduct is Updated"
+    })
 }
 
 module.exports = {
     addProduct,
     getProductDetail,
     productList,
-    editProduct
+    editProduct,
+    editProductVariants,
+    editVariantAttribute,
+    editSubProduct,
 }

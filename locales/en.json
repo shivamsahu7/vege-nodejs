@@ -25,7 +25,10 @@
     "WEREHOUSE_NOTFOUND":"WareHouse is not found",
     "WEREHOUSE_ALREADY_DELETED":"WareHouse is already deleted",
     "PRODUCT_ADDED":"Product added successfully",
-    "PRODUCT_LIST":"Product List"
-
+    "PRODUCT_LIST":"Product List",
+    "UPDATE_PRODUCT":"product is updated",
+    "NOT_UPDATE_PRODUCT":"Product is not updated",
+    "PRODUCT_VARIANT_UPDATED": "Product variant is updated",
+    "PRODUCT_VARIANT_NOT_UPDATED": "Product variant is not updated"
 
 }
