@@ -3,26 +3,23 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class SubCategory extends Model {
+  class productVariants extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
+      productVariants.hasMany(models.VariantAttributes , {primaryKey:"id" , foreignKey:"variantId" , as:"variatAttributes"})
       // define association here
     }
   }
-  SubCategory.init({
-    name: DataTypes.STRING,
-    slug: DataTypes.STRING,
-    image: DataTypes.STRING,
-    categoryId: DataTypes.INTEGER,
-    status: DataTypes.BOOLEAN,
-    deletedAt: DataTypes.DATE,
+  productVariants.init({
+    productId: DataTypes.INTEGER,
+    value: DataTypes.STRING
   }, {
     sequelize,
-    modelName: 'SubCategory',
+    modelName: 'productVariants',
   });
-  return SubCategory;
+  return productVariants;
 };

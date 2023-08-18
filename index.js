@@ -3,7 +3,8 @@ const cors = require('cors')
 const logger = require('./config/logger.js')
 const i18n = require('./config/i18n.js');
 const swaggerUi = require('swagger-ui-express');
-const swaggerDocument = require('./doc/swagger.json')
+const swaggerDocument = require('./doc/swagger.json');
+const swaggerAdminDocument = require('./doc/swagger-admin.json')
 const corsOptions = require('./config/cors.js')
 require('dotenv').config()
 require('module-alias/register');
@@ -20,14 +21,15 @@ const app = express();
 //     next()
 // })
 
-app.use(express.json())
-app.use(express.urlencoded({extended:true}))
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // cors allow
 app.use(cors(corsOptions))
 
 // localization for multiple language
-app.use(i18n.init);
+app.use(i18n.init); 
 
 app.use(express.static('public'));
 
@@ -39,6 +41,7 @@ app.use("/admin",require('@routes/adminRoutes.js'))
 
 // api documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
+app.use('/admin-docs', swaggerUi.serve, swaggerUi.setup(swaggerAdminDocument))
 
 // server listen 3000 port
 app.listen(process.env.APP_PORT,()=>{

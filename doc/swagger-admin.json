@@ -1,0 +1,236 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "VEGE",
+    "description": "E commerce",
+    "version": "1.0.0"
+  },
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "API for Authentication"
+    },
+    {
+      "name": "Admin",
+      "description": "API for Details"
+    },
+  {
+    "name": "Category",
+    "description": "API for Category"
+  },
+  {
+    "name": "SubCategory",
+    "description": "API for SubCategory"
+  }
+  ],
+  "paths": {
+    "/admin/login": {
+      "post": {
+        "summary": "Admin user",
+        "operationId": "loginAdmin",
+        "tags": ["Auth"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "User's email address"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "User's password"
+                  }
+                },
+                "required": ["email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User logged in successfully"
+          },
+          "400": {
+            "description": "Bad request. Invalid input data"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/admin/list-category?limit=5&offset=1": {
+      "get": {
+        "summary": "Category List",
+        "operationId": "categoryList",
+        "tags": ["Category"],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request. Invalid input data"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/admin/add-category": {
+      "post": {
+        "summary": "Add Category",
+        "operationId": "add category",
+        "tags": ["Category"],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request. Invalid input data"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+  
+     "/update-category/:1" : {
+      "post": {
+        "summary": "Admin Update",
+        "operationId": "adminUpdate",
+        "tags": ["Category"],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request. Invalid input data"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/admin/add-subcategory": {
+      "post": {
+        "summary": "Add SubCategory",
+        "operationId": "Add SubCategory",
+        "tags": ["SubCategory"],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request. Invalid input data"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/admin/update-subcategory/23": {
+      "post": {
+        "summary": "Update SubCategory",
+        "operationId": "Update SubCategory",
+        "tags": ["SubCategory"],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request. Invalid input data"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/admin/logout": {
+      "post": {
+        "summary": "Admin Logout",
+        "operationId": "adminLogout",
+        "tags": ["Admin"],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad request. Invalid input data"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    }
+    
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

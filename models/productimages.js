@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class SubCategory extends Model {
+  class productImages extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -13,16 +13,15 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  SubCategory.init({
-    name: DataTypes.STRING,
-    slug: DataTypes.STRING,
-    image: DataTypes.STRING,
-    categoryId: DataTypes.INTEGER,
-    status: DataTypes.BOOLEAN,
-    deletedAt: DataTypes.DATE,
+  productImages.init({
+    productId: DataTypes.INTEGER,
+    subProductId: DataTypes.INTEGER,
+    src: DataTypes.STRING,
+    alt: DataTypes.STRING,
+    position: DataTypes.INTEGER
   }, {
     sequelize,
-    modelName: 'SubCategory',
+    modelName: 'productImages',
   });
-  return SubCategory;
+  return productImages;
 };
