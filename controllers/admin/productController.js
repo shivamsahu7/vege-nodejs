@@ -1,5 +1,7 @@
 const { SubCategory, Product, productVariants, VariantAttributes, SubProduct, productImages, WarehouseStockHistory } = require('@models');
 const { StatusCodes } = require('http-status-codes')
+const { Sequelize, QueryTypes } = require('sequelize');
+const db = require('../../models')
 // const db = require("@models/index.js")
 addProduct = async (req, res) => {
     try {
@@ -96,6 +98,8 @@ addProduct = async (req, res) => {
         console.log(err)
     }
 }
+
+
 
 getProductDetail = async (req, res) => {
     const { id } = req.params
@@ -265,6 +269,54 @@ editSubProduct = async (req, res) => {
     })
 }
 
+addSubProductImage = async (req, res) => {
+    const subProductId = req.params.subproductId;
+
+    // const subProduct = await SubProduct.findOne({
+    //     where: {
+    //         id: subProductId
+    //     },
+    //     attributes:['id','productId'],
+    //     include: {
+    //         model: productImages,
+    //         as: 'productImage',
+    //         order: [['id', 'DESC']]
+    //     }
+    // })
+
+    // we are finding last product image for postion in desc order
+    const subProductQuery = 'SELECT subproducts.id,productimages.position,productimages.id as productImageId  FROM `subproducts` LEFT JOIN `productimages` ON subproducts.id = productimages.subProductId WHERE subproducts.id =' + subProductId + ' ORDER by productImageId DESC LIMIT 1;'
+
+    const subProduct = await db.sequelize.query(subProductQuery, { type: db.sequelize.QueryTypes.SELECT })
+
+    const subProductImage = await productImages.create({
+        productId: subProduct[0].productId,
+        subProductId: subProductId,
+        src: req.body.src,
+        alt: req.body.alt,
+        position: subProduct[0].position + 1,
+    })
+
+    return res.send({
+        status: true,
+        msg: 'image is added'
+    })
+}
+
+editSubProductTotalQuantity = async (req, res) => {
+    if(req.body.action == "subtract"){
+        const query = 'UPDATE `subproducts` SET totalQuantity = totalQuantity - '+req.body.quantity+' WHERE '+req.params.subproductid+';'
+    }else if(req.body.action == "add"){
+        const query = 'UPDATE `subproducts` SET totalQuantity = totalQuantity + '+req.body.quantity+' WHERE '+req.params.subproductid+';'
+    }
+
+  const subProductUpdateQuantity = await  db.sequelize.query(query ,  { type: db.sequelize.QueryTypes.UPDATE })
+
+ return res.send({
+    status:true,
+    msg:'subProduct quantity has been updated'
+  })
+}
 module.exports = {
     addProduct,
     getProductDetail,
@@ -273,4 +325,6 @@ module.exports = {
     editProductVariants,
     editVariantAttribute,
     editSubProduct,
+    addSubProductImage,
+    editSubProductTotalQuantity
 }

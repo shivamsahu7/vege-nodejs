@@ -1,6 +1,7 @@
 const { body, param } = require('express-validator');
 const { Op } = require('sequelize');
-const { WareHouse, SubCategory, SubProduct, Product, productVariants, VariantAttributes } = require('@models');
+const { WareHouse, SubCategory, SubProduct, Product, productVariants, VariantAttributes, productImages } = require('@models');
+const { log } = require('winston');
 
 const addProductValidationRules = [
     body('name').notEmpty(),
@@ -247,10 +248,10 @@ editSubProductValidationRules = [
                     model: productVariants,
                     as: 'productVariants',
                     attributes: ['id', 'value'],
-                    include:{
-                        model:VariantAttributes,
-                        as:'variatAttributes',
-                        attributes:['id' , 'value']
+                    include: {
+                        model: VariantAttributes,
+                        as: 'variatAttributes',
+                        attributes: ['id', 'value']
                     }
                 }
             })
@@ -258,13 +259,13 @@ editSubProductValidationRules = [
             let errors = []
             subProduct.productVariants.forEach((variant) => {
                 if (!data.hasOwnProperty(variant.value)) {
-                    errors.push(variant.value)  
+                    errors.push(variant.value)
                     return;
                 }
-                const attributes = variant.variatAttributes.map((attribute)=>{
+                const attributes = variant.variatAttributes.map((attribute) => {
                     return attribute.value
                 })
-                if(!attributes.includes(req.body.data[[variant.value]])){
+                if (!attributes.includes(req.body.data[[variant.value]])) {
                     errors.push(req.body.data[[variant.value]])
                 }
             })
@@ -276,13 +277,73 @@ editSubProductValidationRules = [
             }
         })
 
-        
+
 ]
 
+addSubProductImageValidationRules = [
+    body('position').isInt().withMessage('position must be in intiger'),
+    param('subproductId').isInt().withMessage("subProduct id must be in integer")
+        .custom(async (subProductId, { req }) => {
+
+            const findSubProduct = await SubProduct.count({
+                where: {
+                    id: subProductId
+                },
+            })
+            console.log(findSubProduct.productImage)
+
+            if (findSubProduct == 0) {
+                throw new Error('subproduct is not found')
+            }
+            return true
+        }),
+    body('src').isString().withMessage('Src must be in string'),
+    body('alt').isString().withMessage('Alt must be in string'),
+]
+
+editSubProductTotalQuantityValidationRules = [
+    param('subproductid').isInt().withMessage('subProduct id must be integer')
+        .custom(async (subProductId, { req }) => {
+
+            const findSubProduct = await SubProduct.count({
+                where: {
+                    id: subProductId
+                },
+            })
+
+
+
+            if (findSubProduct == 0) {
+                throw new Error('subproduct is not found')
+            }
+            return true
+        }),
+    body('action').isIn(['add', 'subtract']).withMessage('action must be add or subtract'),
+    body('quantity').isInt({ min: 1 }).withMessage('quantity must be an integer')
+        .custom(async(quantity, { req }) => {
+
+            if (req.body.action === 'subtract') {
+                const findSubProduct = await SubProduct.findOne({
+                    where: {
+                        id: req.params.subproductid
+                    },
+                    attributes:['totalQuantity']
+                })
+                
+                
+                if (quantity > findSubProduct.totalQuantity) {
+                    throw new Error('quantity must be less then '+findSubProduct.totalQuantity)
+                }
+            }
+            return true
+        })
+]
 module.exports = {
     addProductValidationRules,
+    addSubProductImageValidationRules,
     editProductValidationRules,
     editProductVariantValidationRules,
     editVariantAttributeValidationRules,
-    editSubProductValidationRules
+    editSubProductValidationRules,
+    editSubProductTotalQuantityValidationRules
 }

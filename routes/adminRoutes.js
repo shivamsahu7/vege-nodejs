@@ -14,7 +14,7 @@ const handleValidationErrors = require('@requests/handleValidationErrors.js')
 const { loginAdminValidationRules } = require('@requests/admin/loginValidation.js');
 
 const { addCategoryValidationRules, addSubCategoryValidationRules, updateCategoryValidationRules, updateSubCategoryValidationRules } = require('@requests/admin/categoryValidation.js');
-const { addProductValidationRules, editProductValidationRules , editVariantAttributeValidationRules , editSubProductValidationRules} = require('@requests/admin/productValidation.js')
+const { addProductValidationRules, addSubProductImageValidationRules, editProductValidationRules, editVariantAttributeValidationRules, editSubProductValidationRules, editSubProductTotalQuantityValidationRules } = require('@requests/admin/productValidation.js')
 
 const { addWareHouseValidationRules, updateWareHouseValidationRules, deleteWareHouseValidationRules } = require('@requests/admin/wareHousevalidation.js')
 
@@ -28,6 +28,8 @@ router.post(
 router.use("/", adminMiddleware);
 
 router.get('/list-category', categoryController.categoryList)
+
+
 
 router.post(
     '/add-category',
@@ -144,7 +146,18 @@ router.put(
     productController.editSubProduct,
 );
 
+router.post(
+    '/add-subproduct-images/:subproductId',
+    addSubProductImageValidationRules,
+    handleValidationErrors,
+    productController.addSubProductImage
+);
 
+router.put('/edit-subproduct-total-quantity/:subproductid',
+    editSubProductTotalQuantityValidationRules,
+    handleValidationErrors,
+    productController.editSubProductTotalQuantity
+)
 
 
 
