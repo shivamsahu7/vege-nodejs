@@ -17,7 +17,8 @@ module.exports = (sequelize, DataTypes) => {
     subProductId: DataTypes.INTEGER,
     warehouseId: DataTypes.INTEGER,
     quantity: DataTypes.INTEGER,
-    actionType: DataTypes.STRING
+    actionType: DataTypes.STRING,
+    orderId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'WarehouseStockHistory',

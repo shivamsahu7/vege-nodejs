@@ -147,13 +147,13 @@ router.put(
 );
 
 router.post(
-    '/add-subproduct-images/:subproductId',
+    '/add-subproduct-images/:subProductId',
     addSubProductImageValidationRules,
     handleValidationErrors,
     productController.addSubProductImage
 );
 
-router.put('/edit-subproduct-total-quantity/:subproductid',
+router.put('/edit-subproduct-total-quantity/:subProductId',
     editSubProductTotalQuantityValidationRules,
     handleValidationErrors,
     productController.editSubProductTotalQuantity

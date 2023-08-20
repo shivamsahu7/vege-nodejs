@@ -1,6 +1,7 @@
 const { body, param } = require('express-validator');
 const { Op } = require('sequelize');
 const { WareHouse, SubCategory, SubProduct, Product, productVariants, VariantAttributes, productImages } = require('@models');
+const db = require('../../models/index.js')
 const { log } = require('winston');
 
 const addProductValidationRules = [
@@ -302,7 +303,7 @@ addSubProductImageValidationRules = [
 ]
 
 editSubProductTotalQuantityValidationRules = [
-    param('subproductid').isInt().withMessage('subProduct id must be integer')
+    param('subProductId').isInt().withMessage('subProduct id must be integer')
         .custom(async (subProductId, { req }) => {
 
             const findSubProduct = await SubProduct.count({
@@ -320,22 +321,42 @@ editSubProductTotalQuantityValidationRules = [
         }),
     body('action').isIn(['add', 'subtract']).withMessage('action must be add or subtract'),
     body('quantity').isInt({ min: 1 }).withMessage('quantity must be an integer')
-        .custom(async(quantity, { req }) => {
+        .custom(async (quantity, { req }) => {
+            console.log('case 0.7')
+            if (req.body.action == 'subtract') {
 
-            if (req.body.action === 'subtract') {
-                const findSubProduct = await SubProduct.findOne({
-                    where: {
-                        id: req.params.subproductid
-                    },
-                    attributes:['totalQuantity']
-                })
-                
-                
-                if (quantity > findSubProduct.totalQuantity) {
-                    throw new Error('quantity must be less then '+findSubProduct.totalQuantity)
+                let query = "SELECT SUM(CASE WHEN actionType = 'add' THEN quantity ELSE 0 END) - SUM(CASE WHEN actionType='subtract' THEN quantity ELSE 0 END) AS totalQuantity FROM `warehousestockhistories` WHERE subProductId = :subProductId AND warehouseId = :warehouseId;"
+                console.log('case 0.8')
+                const subProductTotalQuantity = await db.sequelize.query(query,
+                    {
+                        replacements: {
+                            subProductId: req.params.subProductId,
+                            warehouseId: req.body.warehouseId
+                        },
+                        type: db.sequelize.QueryTypes.SELECT
+                    })
+                    console.log(subProductTotalQuantity[0])
+                    console.log('case 0.9')
+                if (quantity > subProductTotalQuantity[0].totalQuantity) {
+                    console.log('case 1')
+                    throw new Error('Quantity must be less than ' + subProductTotalQuantity[0].totalQuantity)
                 }
             }
+            
             return true
+        }),
+    body('warehouseId').isInt().withMessage('wareHouse must be Integer')
+        .custom(async (wareHouseId) => {
+            const checkWareHouse = await WareHouse.count({
+                where: {
+                    id: wareHouseId
+                }
+            })
+
+            if (checkWareHouse === 0) {
+                throw new Error('No wareHouse Exist')
+            }
+            return true;
         })
 ]
 module.exports = {

@@ -304,18 +304,28 @@ addSubProductImage = async (req, res) => {
 }
 
 editSubProductTotalQuantity = async (req, res) => {
-    if(req.body.action == "subtract"){
-        const query = 'UPDATE `subproducts` SET totalQuantity = totalQuantity - '+req.body.quantity+' WHERE '+req.params.subproductid+';'
-    }else if(req.body.action == "add"){
-        const query = 'UPDATE `subproducts` SET totalQuantity = totalQuantity + '+req.body.quantity+' WHERE '+req.params.subproductid+';'
-    }
+    const action = req.body.action == "subtract" ? '-' : '+'
+    const query = `UPDATE subproducts SET totalQuantity = totalQuantity ${action} :quantity WHERE id = :subProductId;`
+    const subProductUpdateQuantity = await db.sequelize.query(query,
+        {
+            replacements: {
+                quantity: req.body.quantity,
+                subProductId:req.params.subProductId
+            },
+            type: db.sequelize.QueryTypes.UPDATE
+        })
 
-  const subProductUpdateQuantity = await  db.sequelize.query(query ,  { type: db.sequelize.QueryTypes.UPDATE })
+        const createWarehousestockHistory = await WarehouseStockHistory.create({
+            subProductId: req.params.subProductId,
+            warehouseId: req.body.warehouseId,
+            quantity: req.body.quantity,
+            actionType: req.body.action,
+        }) 
 
- return res.send({
-    status:true,
-    msg:'subProduct quantity has been updated'
-  })
+    return res.send({
+        status: true,
+        msg: 'subProduct quantity has been updated'
+    })
 }
 module.exports = {
     addProduct,
