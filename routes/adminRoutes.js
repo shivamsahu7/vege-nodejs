@@ -152,12 +152,14 @@ router.post(
     handleValidationErrors,
     productController.addSubProductImage
 );
+console.log("first")
 
 router.put('/edit-subproduct-total-quantity/:subProductId',
     editSubProductTotalQuantityValidationRules,
     handleValidationErrors,
     productController.editSubProductTotalQuantity
 )
+
 
 
 

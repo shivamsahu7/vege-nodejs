@@ -2,6 +2,7 @@ const { SubCategory, Product, productVariants, VariantAttributes, SubProduct, pr
 const { StatusCodes } = require('http-status-codes')
 const { Sequelize, QueryTypes } = require('sequelize');
 const db = require('../../models')
+const { sequelize} = require('../../models')
 // const db = require("@models/index.js")
 addProduct = async (req, res) => {
     try {
@@ -304,28 +305,41 @@ addSubProductImage = async (req, res) => {
 }
 
 editSubProductTotalQuantity = async (req, res) => {
-    const action = req.body.action == "subtract" ? '-' : '+'
-    const query = `UPDATE subproducts SET totalQuantity = totalQuantity ${action} :quantity WHERE id = :subProductId;`
-    const subProductUpdateQuantity = await db.sequelize.query(query,
-        {
-            replacements: {
+    const t = await sequelize.transaction();
+    try {
+        const action = req.body.action == "subtract" ? '-' : '+'
+        const query = `UPDATE subproducts SET totalQuantity = totalQuantity ${action} :quantity WHERE id = :subProductId;`
+        const subProductUpdateQuantity = await sequelize.query(query,
+            {
+                replacements: {
+                    quantity: req.body.quantity,
+                    subProductId:req.params.subProductId
+                },
+                type: sequelize.QueryTypes.UPDATE,
+                transaction:t
+
+            })
+
+            // line error
+            const createWarehousestockHistory = await WarehouseStockHistory.create({
+                subProductId: req.params.subProductId,
+                warehouseId: req.body.warehouseId,
                 quantity: req.body.quantity,
-                subProductId:req.params.subProductId
-            },
-            type: db.sequelize.QueryTypes.UPDATE
-        })
+                actionType: req.body.action,
+            },{transaction:t})
 
-        const createWarehousestockHistory = await WarehouseStockHistory.create({
-            subProductId: req.params.subProductId,
-            warehouseId: req.body.warehouseId,
-            quantity: req.body.quantity,
-            actionType: req.body.action,
-        }) 
+            await t.commit();
 
-    return res.send({
-        status: true,
-        msg: 'subProduct quantity has been updated'
-    })
+             res.send({
+                status: true,
+                msg: 'subProduct quantity has been updated'
+            })
+    } catch (error) {
+        console.log(error)
+        console.log('case 2')
+         await t.rollback();
+         res.status(400).json({ error: req.__('SERVER_ISSUE') });
+    }
 }
 module.exports = {
     addProduct,
