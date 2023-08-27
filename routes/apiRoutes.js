@@ -44,7 +44,7 @@ router.post(
     resetPasswordValidationRules,
     handleValidationErrors,
     authController.resetPassword
-)
+) 
 
 // apply middleware on all routes
 router.use('/',authMiddleware)

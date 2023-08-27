@@ -155,9 +155,9 @@ const editProductValidationRules = [
             if (checkProduct == 0) {
                 throw new Error("no product found ")
             }
-
-            return true
+            return  
         }),
+        
     body('subCategoryId').isInt().withMessage('Category id is not fount')
         .custom(async (subCategoryId, { req }) => {
             let checkSubCategory = await SubCategory.count({
@@ -203,6 +203,52 @@ editVariantAttributeValidationRules = [
             return true
         }),
 
+]
+
+addVariantAttributeValidationRules = [
+    param('productId').isInt().withMessage('product Id must be integer')
+        .custom(async (productId) => {
+            const checkProduct = await Product.count({
+                where: {
+                    id: productId
+                }
+            })
+            
+            if (checkProduct == 0) {
+                throw new Error("No product exist")
+            }
+            return true
+
+            
+        }),
+    body('variantAttributes').isObject().withMessage("variantAttributes must be an object")
+    .custom(async(variantAttributes , {req})=>{
+
+        const variants = Object.keys(variantAttributes)
+            // minimum 1 variant
+            if (variants.length < 1) {
+                throw new Error('Minimum 1 variant is require')
+            }
+
+            // every variant should be 1 attribute
+            const checkKeyWithValue = variants.every(key => variantAttributes[key].length)
+
+            if (!checkKeyWithValue) {
+                throw new Error(' variant have require minimum 1 attribute')
+            }
+            const checkVariantAttributes = await productVariants.count({
+                where:{
+                    productId: req.params.productId,
+                    value: variants
+                }
+            })
+            
+            if(checkVariantAttributes > 0){
+                throw new Error('variants already exist')
+            }
+
+            return true;
+    })
 ]
 
 editSubProductValidationRules = [
@@ -280,6 +326,7 @@ editSubProductValidationRules = [
 
 
 ]
+
 
 addSubProductImageValidationRules = [
     body('position').isInt().withMessage('position must be in intiger'),
@@ -365,6 +412,7 @@ module.exports = {
     editProductValidationRules,
     editProductVariantValidationRules,
     editVariantAttributeValidationRules,
+    addVariantAttributeValidationRules,
     editSubProductValidationRules,
     editSubProductTotalQuantityValidationRules
 }

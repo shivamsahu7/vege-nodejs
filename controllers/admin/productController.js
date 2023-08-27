@@ -2,7 +2,7 @@ const { SubCategory, Product, productVariants, VariantAttributes, SubProduct, pr
 const { StatusCodes } = require('http-status-codes')
 const { Sequelize, QueryTypes } = require('sequelize');
 const db = require('../../models')
-const { sequelize} = require('../../models')
+const { sequelize } = require('../../models')
 // const db = require("@models/index.js")
 addProduct = async (req, res) => {
     try {
@@ -100,8 +100,6 @@ addProduct = async (req, res) => {
     }
 }
 
-
-
 getProductDetail = async (req, res) => {
     const { id } = req.params
 
@@ -197,7 +195,6 @@ editProduct = async (req, res) => {
 }
 
 editProductVariants = async (req, res) => {
-
     const productVariantUpdate = await productVariants.update({
         value: req.body.value
     }, {
@@ -205,7 +202,7 @@ editProductVariants = async (req, res) => {
             id: req.params.variantId
         }
     })
-
+    
     if (productVariantUpdate == 0) {
         return res.status(StatusCodes.BAD_REQUEST).send({
             status: true,
@@ -215,6 +212,49 @@ editProductVariants = async (req, res) => {
         return res.status(StatusCodes.ACCEPTED).send({
             status: true,
             msg: req.__("PRODUCT_VARIANT_UPDATED")
+        })
+    }
+}
+
+addVariantAttribute = async (req, res) => {
+    const t = sequelize.transaction()
+    try {
+        const variantAttributes = req.body.variantAttributes;
+
+        //create variants
+        const newProductVariat = [];
+        const productvariants = Object.keys(variantAttributes);
+
+        productvariants.forEach((variant) => {
+            newProductVariat.push({ productId: req.params.productId, value: variant })
+        })
+
+        const createProductVariat = await productVariants.bulkCreate(newProductVariat,{transaction:t});
+       // [{},{},{}]
+
+        const attributes = [];
+        //createAttributes
+        createProductVariat.forEach((variant) => {
+            // {id:1,value:red}
+            variantAttributes[variant.value].forEach((variantAttribute)=>{ //["s23","s3 plus","s23 ultra"]
+                attributes.push({ variantId: variant.id, value: variantAttribute })
+            })
+        })
+        // [{},{},{}]
+        const createVariantsAttributes = await VariantAttributes.bulkCreate(attributes,{transaction:t})
+
+        t.commit()
+        
+        return res.status(StatusCodes.ACCEPTED).send({
+            status: true,
+            msg: "variant attribute has been updated"
+        })
+    } catch (error) {
+        console.log(error)
+        t.rollback()
+        return res.status(StatusCodes.BAD_REQUEST).send({
+            status: false,
+            msg: error
         })
     }
 }
@@ -313,37 +353,38 @@ editSubProductTotalQuantity = async (req, res) => {
             {
                 replacements: {
                     quantity: req.body.quantity,
-                    subProductId:req.params.subProductId
+                    subProductId: req.params.subProductId
                 },
                 type: sequelize.QueryTypes.UPDATE,
-                transaction:t
+                transaction: t
 
             })
 
-            // line error
-            const createWarehousestockHistory = await WarehouseStockHistory.create({
-                subProductId: req.params.subProductId,
-                warehouseId: req.body.warehouseId,
-                quantity: req.body.quantity,
-                actionType: req.body.action,
-            },{transaction:t})
+        // line error
+        const createWarehousestockHistory = await WarehouseStockHistory.create({
+            subProductId: req.params.subProductId,
+            warehouseId: req.body.warehouseId,
+            quantity: req.body.quantity,
+            actionType: req.body.action,
+        }, { transaction: t })
 
-            await t.commit();
+        await t.commit();
 
-             res.send({
-                status: true,
-                msg: 'subProduct quantity has been updated'
-            })
+        res.send({
+            status: true,
+            msg: 'subProduct quantity has been updated'
+        })
     } catch (error) {
         console.log(error)
         console.log('case 2')
-         await t.rollback();
-         res.status(400).json({ error: req.__('SERVER_ISSUE') });
+        await t.rollback();
+        res.status(400).json({ error: req.__('SERVER_ISSUE') });
     }
 }
 module.exports = {
     addProduct,
     getProductDetail,
+    addVariantAttribute,
     productList,
     editProduct,
     editProductVariants,
