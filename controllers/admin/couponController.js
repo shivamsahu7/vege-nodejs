@@ -4,7 +4,6 @@ const { sequelize } = require('@models')
 const {newCurrentMysqlDate} = require('../../helper/dateHelper.js')
 
 
-
 addCoupon = async (req, res) => {
     const t = await sequelize.transaction();
     try {
@@ -77,23 +76,25 @@ editCoupon = async (req, res) => {
 
         const checkCouponRefIds = checkCouponDetail.map(couponDetail => couponDetail.couponTypeRefId) // dbRefId
 
-        console.log('db', checkCouponRefIds)
         const refIds = req.body.couponTypeRefId // payload
         console.log('payload', refIds)
-        const addValues = refIds.filter(value => !checkCouponRefIds.includes(value))
+        const addValues = refIds.filter(value => !checkCouponRefIds.includes(value));
+
         console.log('addvalue', addValues)
         const removeValues = checkCouponRefIds.filter(value => !refIds.includes(value))
         console.log('removeValues', removeValues)
         // how many ids does not exist in db
 
-        const addCouponDetail = addValues.map((value) => {
-            return ({
-                couponId: req.params.couponId,
-                couponTypeRefId: value,
-            })
-        })
 
-        if(addCouponDetail.length > 0){
+        if(addValues.length > 0){
+
+            const addCouponDetail = addValues.map((value) => {
+                return ({
+                    couponId: req.params.couponId,
+                    couponTypeRefId: value,
+                })
+            })
+
             const updateCoupons = await CouponDetail.bulkCreate(addCouponDetail)
             console.log(addCouponDetail)
         }

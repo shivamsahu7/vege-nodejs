@@ -1,3 +1,4 @@
+
 const { body, param } = require('express-validator');
 const { Coupon, Product, Category } = require('@models');
 const { Op } = require('sequelize');
@@ -41,9 +42,8 @@ const addCouponValidationRules = [
                         id: couponTypeRefId
                     }
                 })
-                console.log(checkProduct, couponTypeRefId.length)
 
-                if (checkProduct != couponTypeRefId.length) throw new Error('product not found')
+                if (checkProduct != couponTypeRefId.length) throw new Error('product not found');
 
             } else if (req.body.type == "category") {
                 const checkCategory = await Category.count({
@@ -56,8 +56,7 @@ const addCouponValidationRules = [
             }
             return true
         }),
-
-]
+];
 
 const editCouponValidationRules = [
     param('couponId').toInt().isInt().withMessage('couponId must be integer')
@@ -71,7 +70,6 @@ const editCouponValidationRules = [
     body('name').isString().withMessage('name must be string'),
     body('code').isString().withMessage('code must be string')
         .custom(async (code, { req }) => {
-
             const checkCoupon = await Coupon.count({
                 where: {
                     id: {
@@ -100,8 +98,30 @@ const editCouponValidationRules = [
     body('termAndCondition').isString().withMessage('terms and conditions must be string'),
     body("image").isString().withMessage().withMessage('image must be string'),
     body('couponTypeRefId').isArray().withMessage('couponTypeRefId must be array')
+        .custom(async (couponTypeRefIds, { req }) => {
+            const type = req.body.type
+            if (type == "product") {
+                let checkTypeRefIds = await Product.count({
+                    where: {
+                        id: couponTypeRefIds
+                    }
+                })
+                if (checkTypeRefIds != couponTypeRefIds.length) throw new Error(" invalid refTypeRefIds ");
+            }
 
-]
+            if (type == "category") {
+                let checkTypeRefIds = await Category.count({
+                    where: {
+                        id: couponTypeRefIds
+                    }
+                })
+
+                if (checkTypeRefIds != couponTypeRefIds.length) throw new Error(" invalid refTypeRefIds ");
+            }
+            
+            return true
+        })
+];
 
 const deleteCouponValidationRules = [
     param('couponId').isInt().withMessage('couponId must be integer')
@@ -117,7 +137,7 @@ const deleteCouponValidationRules = [
             if (checkCoupon == 0) throw new Error("coupon may be already deleted or not exist")
             return true
         })
-]
+];
 
 module.exports = {
     addCouponValidationRules,

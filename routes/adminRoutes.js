@@ -9,6 +9,7 @@ const categoryController = require('@controllers/admin/categoryController.js')
 const subCategoryController = require('@controllers/admin/subCategoryController.js')
 const productController = require('@controllers/admin/productController.js')
 const couponController = require('@controllers/admin/couponController.js')
+const permissionController = require('@controllers/admin/permissionController.js')
 
 const handleValidationErrors = require('@requests/handleValidationErrors.js')
 
@@ -20,6 +21,8 @@ const { addProductValidationRules, addSubProductImageValidationRules, editProduc
 
 const { addWareHouseValidationRules, updateWareHouseValidationRules, deleteWareHouseValidationRules } = require('@requests/admin/wareHousevalidation.js')
 const { addCouponValidationRules , editCouponValidationRules,deleteCouponValidationRules} = require('@requests/admin/couponValidation.js')
+const { addPermissionHandleValidationRules , addAssignPermissionHandleValidationRules , editPermissionHandleValidationRules} = require('@requests/admin/permissionsValidation.js')
+
 
 
 router.post('/login',
@@ -29,6 +32,25 @@ router.post('/login',
 )
 
 router.use("/", adminMiddleware);
+
+router.post('/add-admin-permissions',
+addPermissionHandleValidationRules,
+handleValidationErrors,
+permissionController.addPermission
+)
+
+router.post('/add-assign-permission',
+addAssignPermissionHandleValidationRules,
+handleValidationErrors,
+permissionController.addUserPermission,
+);
+
+router.post('/edit-admin-permission/:id',
+editPermissionHandleValidationRules,
+handleValidationErrors,
+permissionController.editPermission
+)
+
 
 router.get('/list-category', categoryController.categoryList)
 
@@ -163,13 +185,12 @@ router.post('/edit-coupon/:couponId',
     handleValidationErrors,
     couponController.editCoupon
 )
+
 router.delete('/delete-coupon/:couponId',
 deleteCouponValidationRules,
 handleValidationErrors,
 couponController.deleteCoupon
 )
-
-
 
 
 

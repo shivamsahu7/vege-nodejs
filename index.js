@@ -21,7 +21,6 @@ const app = express();
 //     next()
 // })
 
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
