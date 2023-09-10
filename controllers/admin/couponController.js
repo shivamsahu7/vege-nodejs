@@ -27,7 +27,7 @@ addCoupon = async (req, res) => {
                 couponId: createCoupon.id,
                 couponTypeRefId: refId
             })
-        }, { transaction: t });
+        });
 
         const createCouponDetail = await CouponDetail.bulkCreate(couponDetail)
 
@@ -95,7 +95,7 @@ editCoupon = async (req, res) => {
                 })
             })
 
-            const updateCoupons = await CouponDetail.bulkCreate(addCouponDetail)
+            const updateCoupons = await CouponDetail.bulkCreate(addCouponDetail ,{transaction: t})
             console.log(addCouponDetail)
         }
 
@@ -104,7 +104,8 @@ editCoupon = async (req, res) => {
                 where: {
                     couponId: req.params.couponId,
                     couponTypeRefId: removeValues
-                }
+                },
+                transaction: t,
             })
         }
 

@@ -1,5 +1,5 @@
 const { Permission, userPermission, sequelize, Sequelize } = require('@models');
-
+const db = require("@models")
 const { StatusCodes } = require('http-status-codes');
 const { errorMonitor } = require('nodemailer/lib/xoauth2');
 const { query } = require('express');
@@ -31,8 +31,8 @@ addPermission = async (req, res) => {
 }
 
 addUserPermission = async (req, res) => {
+    const t = await sequelize.transaction()
     try {
-
         const { adminId, permissionId } = req.body
         let query = "select permissionId from userpermissions where adminId = :adminId"
         const permissionData = await sequelize.query(
@@ -48,48 +48,46 @@ addUserPermission = async (req, res) => {
         const removePermission = permissionIdDB.filter(value => !permissionId.includes(value));
         console.log("add", addPermission, "remove", removePermission)
 
-
-        // const adduserPermission = await userPermission.create({
-        //     adminId: adminId,
-        //     permissionId: permissionId
-        // })
-        // return res.send({r:"hii"})
-        let removeAddQuery = "";
+        let addQuery = "";
+        let removeQuery = "";
 
         if (addPermission.length > 0) {
-            removeAddQuery += `INSERT INTO userpermissions(adminId ,permissionId) VALUES`
+            addQuery += `INSERT INTO userpermissions(adminId ,permissionId) VALUES`
             addPermission.forEach((addValue, index) => {
-                removeAddQuery += `(${adminId}, ${addValue})`
+                addQuery += `(${adminId}, ${addValue})`
                 if ((addPermission.length - 1) != index) {
-                    removeAddQuery += ","
+                    addQuery += ","
                 }
             });
-            removeAddQuery += ";"
+            addQuery += ";"
         }
-        
-        // if (removePermission.length > 0) {
-        //     removeAddQuery += `DELETE FROM userpermissions WHERE IN (`
-        //     removePermission.forEach((remValue, index) => {
-        //         removeAddQuery += `${remValue}`
-        //         if ((removePermission.length - 1) != index) {
-        //             removeAddQuery += ","
-        //         }
-        //     })
-        //     removeAddQuery += ");"
-        // }
 
-        const result = await sequelize.query(query,{
-            plain: true,
-        })
+        if (removePermission.length > 0) {
+            removeQuery += `DELETE FROM userpermissions WHERE adminId IN (`
+            removePermission.forEach((remValue, index) => {
+                removeQuery += `${remValue}`
+                if ((removePermission.length - 1) != index) {
+                    removeQuery += ","
+                }
+            })
+            removeQuery += ");"
+        }
 
-console.log(result , "result");
-        // console.log(removeAddQuery)
+        if (addQuery != "") {
+            const result = await db.sequelize.query(addQuery, { transaction: t })
+        }
+
+        if (removeQuery != "") {
+            const result = await db.sequelize.query(removeQuery, { transaction: t })
+        }
+        await t.commit();
         return res.status(StatusCodes.ACCEPTED).send({
             status: true,
             msg: "user permission has been created"
         })
 
     } catch (error) {
+        await t.rollback()
         console.log(error)
         return res.status(StatusCodes.BAD_REQUEST).send({
             status: true,
