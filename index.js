@@ -38,6 +38,7 @@ app.use("/api",require('@routes/apiRoutes.js'))
 // admin routes
 app.use("/admin",require('@routes/adminRoutes.js'))
 
+
 // api documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 app.use('/admin-docs', swaggerUi.serve, swaggerUi.setup(swaggerAdminDocument))

@@ -87,7 +87,6 @@ editCoupon = async (req, res) => {
 
 
         if(addValues.length > 0){
-
             const addCouponDetail = addValues.map((value) => {
                 return ({
                     couponId: req.params.couponId,

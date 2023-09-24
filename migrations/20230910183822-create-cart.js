@@ -10,19 +10,19 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       userId: {
-        type: Sequelize.NUMBER
+        type:Sequelize.INTEGER
       },
       amount: {
-        type: Sequelize.NUMBER
+        type: Sequelize.INTEGER
       },
       totalAmount: {
-        type: Sequelize.NUMBER
+        type: Sequelize.INTEGER
       },
       couponCode: {
         type: Sequelize.STRING
       },
       deliveryCharge: {
-        type: Sequelize.NUMBER
+        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,

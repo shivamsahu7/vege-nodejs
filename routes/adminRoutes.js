@@ -10,6 +10,7 @@ const subCategoryController = require('@controllers/admin/subCategoryController.
 const productController = require('@controllers/admin/productController.js')
 const couponController = require('@controllers/admin/couponController.js')
 const permissionController = require('@controllers/admin/permissionController.js')
+const deliveryController = require("../controllers/admin/deliveryController.js")
 
 const handleValidationErrors = require('@requests/handleValidationErrors.js')
 
@@ -22,7 +23,7 @@ const { addProductValidationRules, addSubProductImageValidationRules, editProduc
 const { addWareHouseValidationRules, updateWareHouseValidationRules, deleteWareHouseValidationRules } = require('@requests/admin/wareHousevalidation.js')
 const { addCouponValidationRules , editCouponValidationRules,deleteCouponValidationRules} = require('@requests/admin/couponValidation.js')
 const { addPermissionHandleValidationRules , addAssignPermissionHandleValidationRules , editPermissionHandleValidationRules} = require('@requests/admin/permissionsValidation.js')
-
+const deliveryValidation = require("../requests/admin/deliveryValidation.js")
 
 
 router.post('/login',
@@ -190,6 +191,12 @@ router.delete('/delete-coupon/:couponId',
 deleteCouponValidationRules,
 handleValidationErrors,
 couponController.deleteCoupon
+)
+
+router.post('/add-delivery-charges',
+deliveryValidation.addDeliveryChargeValidationRules,
+handleValidationErrors,
+deliveryController.addDeliveryCharge
 )
 
 

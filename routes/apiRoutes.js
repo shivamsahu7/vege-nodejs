@@ -8,7 +8,7 @@ const userController = require('@controllers/api/userController.js')
 const handleValidationErrors = require('@requests/handleValidationErrors.js')
 
 const { loginUserValidationRules,registerUserValidationRules,otpValidationRules,forgotPasswordValidationRules,resetPasswordValidationRules } = require('@requests/api/authValidation.js');
-
+const cartValidation = require('../requests/api/cartValidation.js')
 
 
 router.post(
@@ -58,5 +58,12 @@ router.post(
     '/logout',
     userController.logout
 )
+
+router.post('/add-cart', 
+cartValidation.addCartValidationRules,
+handleValidationErrors,
+userController.addCart
+);
+
 
 module.exports = router

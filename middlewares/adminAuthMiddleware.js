@@ -1,6 +1,6 @@
 var jwt = require('jsonwebtoken');
 const moment = require('moment');
-const { Admin, personalAccessToken , sequelize , Sequelize} = require('@models');
+const { Admin, personalAccessToken, sequelize, Sequelize } = require('@models');
 
 module.exports = async (req, res, next) => {
     let token;
@@ -46,7 +46,7 @@ module.exports = async (req, res, next) => {
     }
 
     try {
-       const data = jwt.verify(splittedToken[1], process.env.JWT_SECRET_KEY)
+        const data = jwt.verify(splittedToken[1], process.env.JWT_SECRET_KEY)
         // check email already exist ?
         const checkAdmin = await Admin.findOne({
             where: {
@@ -58,7 +58,7 @@ module.exports = async (req, res, next) => {
         });
         if (checkAdmin) {
             req.admin = await checkAdmin.dataValues
-         
+
         } else {
             return res.status(401).json({
                 status: false,
@@ -73,9 +73,9 @@ module.exports = async (req, res, next) => {
         })
     }
 
-   
-        try {
-            if (req.admin.type != "admin") {
+
+    try {
+        if (req.admin.type != "admin") {
             const currentPath = req.path.split('/')[1];
 
             let query = "SELECT permissions.id , name , slug FROM userpermissions left JOIN permissions ON userpermissions.permissionId = permissions.id WHERE adminId = :adminId AND permissions.slug = :currentPath "
@@ -92,14 +92,14 @@ module.exports = async (req, res, next) => {
                 throw Error(' permission denied ')
             };
         }
-        } catch (error) {
-            
-            return res.send({
-                status: false,
-                msg: error.message
-            })
-        }
-        console.log("first")
-        next()
+    } catch (error) {
+
+        return res.send({
+            status: false,
+            msg: error.message
+        })
+    }
+    console.log("first")
+    next()
 
 }

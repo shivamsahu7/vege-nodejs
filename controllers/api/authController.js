@@ -22,6 +22,7 @@ login = async (req,res)=>{
                 'id','email','name','password'
             ]
         }); 
+        console.log(checkUser,"data")
         if(checkUser){
             // encrypt password
             hashResult = await bcrypt.compare(password, checkUser.password);

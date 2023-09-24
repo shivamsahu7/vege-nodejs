@@ -19,6 +19,7 @@ categoryList = async (req, res) => {
     return res.status(StatusCodes.ACCEPTED).send({
         status: true,
         totalPages:Math.ceil(totalNumberOfPages/pageSize),
+        currentPage:pageNumber,
         msg: "retrived data from category",
         categories: categoryData
     })

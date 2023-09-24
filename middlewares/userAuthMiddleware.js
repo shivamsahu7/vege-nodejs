@@ -15,14 +15,21 @@ module.exports = async (req,res,next)=>{
             error:req.__('UNAUTHORIZE')
         })
     }
-
     try{
         splittedToken = token.split("|")
         const checkPersonalAccessToken = await personalAccessToken.findOne({
             where:{
                 id:splittedToken[0]
-            }
+            },
+            attributes:[
+                'id','tokenableType'
+            ]
         })
+    
+        if(checkPersonalAccessToken){
+            req.user = checkPersonalAccessToken
+        }
+        
         // check record in db
         if(!checkPersonalAccessToken){
             return res.status(401).json({
