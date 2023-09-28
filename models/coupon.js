@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
+      Coupon.hasMany(models.CouponDetail, { primaryKey:'id', foreignKey: 'couponId', as: 'couponDetails' });
       // define association here
     }
   }
@@ -23,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
     maxDiscount: DataTypes.INTEGER,
     termAndCondition: DataTypes.TEXT,
     image: DataTypes.STRING,
-    deletedAt:DataTypes.DATE
+    deletedAt:DataTypes.DATE,
   }, {
     sequelize,
     modelName: 'Coupon',

@@ -10,6 +10,14 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
+      // cartSubProduct.hasOne(models.SubProduct, { primary:'subProduct', foreignKey: 'id', as: 'subProductData' });
+
+      // cartSubProduct.belongsTo(models.SubProduct, {
+      //   foreignKey: 'subProduct', // This is the foreign key column in the cartSubProduct table
+      //   targetKey: 'id', // This is the target key column in the SubProduct table
+      //   as: 'subProductData'
+      // });
+
       // define association here
     }
   }
