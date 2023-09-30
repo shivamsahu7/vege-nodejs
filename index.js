@@ -35,9 +35,12 @@ app.use(express.static('public'));
 // api routes
 app.use("/api",require('@routes/apiRoutes.js'))
 
+
 // admin routes
 app.use("/admin",require('@routes/adminRoutes.js'))
 
+//pilot routes
+app.use("/pilot",require('@routes/pilotRoutes.js'))
 
 // api documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))

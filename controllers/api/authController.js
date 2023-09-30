@@ -225,6 +225,7 @@ otpVerify = async (req,res)=>{
 
 forgotPassword = async (req,res)=>{
     try{
+        
         const {email} = req.body
         const checkUser = await User.findOne({
             where:{
