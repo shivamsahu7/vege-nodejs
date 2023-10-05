@@ -12,6 +12,6 @@ handleValidationError,
 pilotController.loginPilot,
 );
 
-router.use('/', pilotAuthMiddleware)
+router.use('/', pilotAuthMiddleware);
 
 module.exports = router

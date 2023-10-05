@@ -10,7 +10,7 @@ async function forgotPasswordMail(recipient, templateData) {
     const templatePath = path.resolve(process.cwd(),'resources','email', 'forgot-password.ejs');
 
     const template = await ejs.renderFile(templatePath, templateData);
-
+    
     const mailOptions = {
         from: process.env.EMAIL_FROM,
         to: recipient,
