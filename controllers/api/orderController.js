@@ -7,14 +7,14 @@ addOrder = async (req, res) => {
     try {
         let createOrderQuery = 'INSERT INTO orders(userId,amount,totalAmount,couponCode, deliveryCharge,discountAmount) SELECT carts.userId AS userId , carts.amount AS cartAmount , carts.totalAmount AS cartTotalAmount , carts.couponCode AS cartCouponCode , carts.deliveryCharge AS cartDeliveryCharge , carts.discountAmount AS cartDiscountAmount  FROM carts WHERE userId = :userId;'
 
-        let createOrderSubProductQuery = 'SELECT cartsubproducts.userId AS userId , :orderId AS orderId, cartsubproducts.subProduct AS orderSubProductId, cartsubproducts.quantity AS orderQuantity , 0 AS status , subproducts.price AS amount FROM cartsubproducts INNER JOIN subproducts ON cartsubproducts.subProduct = subproducts.id WHERE userId = :userId;'
+        let createOrderSubProductQuery = 'INSERT INTO ordersubproducts(userId,orderId,subProductId,quantity,status, amount) SELECT cartsubproducts.userId AS userId , :orderId AS orderId, cartsubproducts.subProduct AS orderSubProductId, cartsubproducts.quantity AS orderQuantity , 0 AS status , subproducts.price AS amount FROM cartsubproducts INNER JOIN subproducts ON cartsubproducts.subProduct = subproducts.id WHERE userId = :userId;'
 
         const createOrder = await db.sequelize.query(createOrderQuery, {
             replacements: {
                 userId: req.user.id,
             },
         })
-
+        
         await db.sequelize.query(createOrderSubProductQuery, {
             replacements: {
                 userId: req.user.id,
@@ -24,7 +24,7 @@ addOrder = async (req, res) => {
 
         return res.send({
             status: true,
-            msg: "order has been placed successfully ",
+            msg: " order !!! is placed  ",
         })
 
     } catch (error) {

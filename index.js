@@ -1,4 +1,10 @@
 const express = require('express')
+const app = express();
+const httpServer = require('http').createServer(app);
+// const io = require('socket.io')(httpServer);
+require('./websocket/pilotSocket.js').getIo(httpServer);
+const pilotCron = require('./cron.js') 
+
 const cors = require('cors')
 const logger = require('./config/logger.js')
 const i18n = require('./config/i18n.js');
@@ -6,10 +12,10 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./doc/swagger.json');
 const swaggerAdminDocument = require('./doc/swagger-admin.json')
 const corsOptions = require('./config/cors.js')
+
+
 require('dotenv').config()
 require('module-alias/register');
-
-const app = express();
 
 // insert log
 // app.use((req,res,next)=>{
@@ -47,6 +53,6 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 app.use('/admin-docs', swaggerUi.serve, swaggerUi.setup(swaggerAdminDocument))
 
 // server listen 3000 port
-app.listen(process.env.APP_PORT,()=>{
+httpServer.listen(process.env.APP_PORT,()=>{
     console.log(`server listening port http://localhost:${process.env.APP_PORT}`)
 })

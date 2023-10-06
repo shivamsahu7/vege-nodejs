@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="/socket.io/socket.io.js"></script>
+    <title>socket</title>
+</head>
+<body>
+    <h3>socket</h3>
+    <button onclick={socketHandler()}>click</button>
+</body>
+<script>
+    const socket = io.connect()
+    socket.on('connect', () => {
+        const socketId = socket.id;
+        console.log("connected", socketId);
+    })
+
+    socketHandler = ()=>{
+        console.log("button clicked");
+          socket.emit('test',"msg")
+    }
+
+
+</script>
+</html>
