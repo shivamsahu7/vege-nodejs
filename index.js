@@ -3,7 +3,7 @@ const app = express();
 const httpServer = require('http').createServer(app);
 // const io = require('socket.io')(httpServer);
 require('./websocket/pilotSocket.js').getIo(httpServer);
-const pilotCron = require('./cron.js') 
+const pilotCron = require('./cron/pilotCron.js') 
 
 const cors = require('cors')
 const logger = require('./config/logger.js')
