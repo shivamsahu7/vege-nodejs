@@ -3,6 +3,7 @@ const app = express();
 const httpServer = require('http').createServer(app);
 // const io = require('socket.io')(httpServer);
 require('./websocket/pilotSocket.js').getIo(httpServer);
+
 const pilotCron = require('./cron/pilotCron.js') 
 
 const cors = require('cors')
@@ -11,7 +12,9 @@ const i18n = require('./config/i18n.js');
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./doc/swagger.json');
 const swaggerAdminDocument = require('./doc/swagger-admin.json')
-const corsOptions = require('./config/cors.js')
+const corsOptions = require('./config/cors.js');
+const SESTransport = require('nodemailer/lib/ses-transport/index.js');
+const { setInterval } = require('timers/promises');
 
 
 require('dotenv').config()
@@ -26,6 +29,8 @@ require('module-alias/register');
 //     }
 //     next()
 // })
+
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

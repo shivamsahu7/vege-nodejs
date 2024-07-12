@@ -5,37 +5,62 @@ const Razorpay = require('razorpay')
 
 addOrder = async (req, res) => {
     try {
-        // let createOrderQuery = 'INSERT INTO orders(userId,amount,totalAmount,couponCode, deliveryCharge,discountAmount) SELECT carts.userId AS userId , carts.amount AS cartAmount , carts.totalAmount AS cartTotalAmount , carts.couponCode AS cartCouponCode , carts.deliveryCharge AS cartDeliveryCharge , carts.discountAmount AS cartDiscountAmount  FROM carts WHERE userId = :userId;'
+        const { lat, lng } = req.body
 
-        // let createOrderSubProductQuery = 'INSERT INTO ordersubproducts(userId,orderId,subProductId,quantity,status, amount) SELECT cartsubproducts.userId AS userId , :orderId AS orderId, cartsubproducts.subProduct AS orderSubProductId, cartsubproducts.quantity AS orderQuantity , 0 AS status , subproducts.price AS amount FROM cartsubproducts INNER JOIN subproducts ON cartsubproducts.subProduct = subproducts.id WHERE userId = :userId;'
+        let createOrderQuery = 'INSERT INTO orders(userId,amount,totalAmount,couponCode, deliveryCharge,discountAmount,lat, lng) SELECT carts.userId AS userId , carts.amount AS cartAmount , carts.totalAmount AS cartTotalAmount , carts.couponCode AS cartCouponCode , carts.deliveryCharge AS cartDeliveryCharge , carts.discountAmount AS cartDiscountAmount ,:lat,:lng FROM carts WHERE userId = :userId;'
 
-        // const createOrder = await db.sequelize.query(createOrderQuery, {
-        //     replacements: {
-        //         userId: req.user.id,
-        //     },
-        // })
-        
-        // await db.sequelize.query(createOrderSubProductQuery, {
-        //     replacements: {
-        //         userId: req.user.id,
-        //         orderId: createOrder[0]
-        //     },
-        // });
+        let createOrderSubProductQuery = 'INSERT INTO ordersubproducts(userId,orderId,subProductId,quantity,status, amount) SELECT cartsubproducts.userId AS userId , :orderId AS orderId, cartsubproducts.subProduct AS orderSubProductId, cartsubproducts.quantity AS orderQuantity , 0 AS status , subproducts.price AS amount FROM cartsubproducts INNER JOIN subproducts ON cartsubproducts.subProduct = subproducts.id WHERE userId = :userId;'
 
-//         let query ="SELECT cartsubproducts.subProduct AS subProductId , cartsubproducts.quantity AS quantity ,  warehouses.id AS wareHouseId , warehouses.lat AS wareHouseLat, warehouses.lng AS wareHouseLng ,
- 
-//         MIN((
+        const createOrder = await db.sequelize.query(createOrderQuery, {
+            replacements: {
+                userId: req.user.id,
+                lat,
+                lng
+            },
+        })
+
+        await db.sequelize.query(createOrderSubProductQuery, {
+            replacements: {
+                userId: req.user.id,
+                orderId: createOrder[0]
+            },
+        });
+
+        // let query = "SELECT cartsubproducts.subProduct AS subProductId , cartsubproducts.quantity AS quantity ,  warehouses.id AS wareHouseId , warehouses.lat AS wareHouseLat, warehouses.lng AS wareHouseLng ,MIN((6371 * ACOS(COS(RADIANS(:lat)) * COS(RADIANS(warehouses.lat)) * COS(RADIANS( warehouses.lng) - RADIANS( :lng)) + SIN(RADIANS(:lat)) * SIN(RADIANS(warehouses.lat)))) )AS distance_in_km  FROM cartsubproducts INNER JOIN warehousesubproductquantities ON cartsubproducts.subProduct =warehousesubproductquantities.subProductId INNER JOIN warehouses ON warehousesubproductquantities.wareHouseId = warehouses.id  WHERE  cartsubproducts.userId = 1 AND cartsubproducts.quantity <= warehousesubproductquantities.totalQuantity GROUP BY cartsubproducts.subProduct";
+
+        // SELECT warehouses.lat AS warehouseLat, warehouses.lng AS warehousseLng, warehouses.id AS warehouseId FROM warehouses INNER join warehousesubproductquantities on warehouses.id = warehousesubproductquantities.wareHouseId WHERE warehousesubproductquantities.subProductId IN(1,2) GROUP BY warehouses.id HAVING COUNT(warehouses.id) >= 2
+
+//         SELECT
+//     warehouses.lat AS warehouseLat,
+//     warehouses.lng AS warehousseLng,
+//     warehouses.id AS warehouseId,
+//         (
 //             6371 * ACOS(
-//                 COS(RADIANS(23.229555)) * COS(RADIANS(warehouses.lat)) *
-//                 COS(RADIANS( warehouses.lng) - RADIANS( 77.443834)) +
-//                 SIN(RADIANS(23.229555)) * SIN(RADIANS(warehouses.lat))
+//                 COS(RADIANS(23.229555)) * COS(RADIANS(warehouses.lat)) * COS(
+//                     RADIANS(warehouses.lng) - RADIANS(77.443834)
+//                 ) + SIN(RADIANS(23.229555)) * SIN(RADIANS(warehouses.lat))
 //             )
-//         ) )AS distance_in_km
-//     FROM cartsubproducts INNER JOIN warehousesubproductquantities ON cartsubproducts.subProduct = warehousesubproductquantities.subProductId INNER JOIN warehouses
-//     ON warehousesubproductquantities.wareHouseId = warehouses.id 
-// WHERE  cartsubproducts.userId = 1 AND cartsubproducts.quantity warehousesubproductquantities.totalQuantity GROUP BY cartsubproducts.subProduct"
+//     ) AS distance_in_km
+// FROM
+//     warehouses
+// INNER JOIN warehousesubproductquantities ON warehouses.id = warehousesubproductquantities.wareHouseId
+// WHERE
+//     warehousesubproductquantities.subProductId IN(1, 2)
+// GROUP BY
+//     warehouses.id
+// HAVING
+//     COUNT(warehouses.id) >= 2 ORDER BY distance_in_km ASC LIMIT 1
+
+        const distance = await db.sequelize.query(query, {
+            replacements: {
+                lat,
+                lng
+            },
+            type: db.Sequelize.QueryTypes.SELECT
+        });
 
         return res.send({
+            distance,
             status: true,
             msg: " order !!! is placed  ",
         })

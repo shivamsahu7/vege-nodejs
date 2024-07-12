@@ -23,10 +23,6 @@ return res.send({status:true,token:token, msg:findPilot})
 
 
 
-
-
-
-
 module.exports ={
     loginPilot
 }

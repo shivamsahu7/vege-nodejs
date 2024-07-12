@@ -86,7 +86,6 @@ addCart = async (req, res) => {
 addCartDiscount = async (req, res) => {
     const { couponCode } = req.body
 
-
     let totalAmountQuery = 'SELECT SUM(subproducts.price * cartsubproducts.quantity) AS totalAmount FROM cartsubproducts INNER JOIN subproducts ON subproducts.id = cartsubproducts.subProduct WHERE cartsubproducts.userId = :userId'
 
     const getTotalAmount = await db.sequelize.query(totalAmountQuery, {

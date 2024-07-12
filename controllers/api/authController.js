@@ -98,7 +98,7 @@ register = async (req,res)=>{
                     error:req.__('USER_EXIST')
                 });
             }
-            // user did not verify
+            // user did not verify;
             else{
                 await checkUser.update({
                     name:name,
